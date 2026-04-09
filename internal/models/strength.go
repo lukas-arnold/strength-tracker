@@ -2,12 +2,12 @@ package models
 
 import "time"
 
-type StrengthAdd struct {
+type Strength struct {
 	Load      string    `json:"Load"`
 	CreatedAt time.Time `json:"CreatedAt"`
 }
 
-type StrengthGet struct {
+type StrengthAdd struct {
 	Id int `json:"Id"`
-	StrengthAdd
+	Strength
 }

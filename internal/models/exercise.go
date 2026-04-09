@@ -1,12 +1,16 @@
 package models
 
-type ExerciseAdd struct {
+type Exercise struct {
 	Name        string `json:"Name"`
 	MuscleGroup string `json:"MuscleGroup"`
 }
 
-type ExerciseGet struct {
-	Id int `json:"Id"`
+type ExerciseAdd struct {
+	Id int64 `json:"Id"`
+	Exercise
+}
+
+type ExerciseFull struct {
 	ExerciseAdd
-	StrengthHistory []StrengthGet `json:"StrengtHistory"`
+	StrengthHistory []Strength `json:"StrengthHistory"`
 }
