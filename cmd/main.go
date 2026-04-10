@@ -10,7 +10,13 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /", handler.HomePage)
+	mux.HandleFunc("GET /", handler.HandleViewExercises)
+	mux.HandleFunc("GET /exercise/add", handler.HandleAddExercise)
+	mux.HandleFunc("POST /exercise/add", handler.HandleAddExercise)
+	mux.HandleFunc("GET /exercise/edit/{id}", handler.HandleEditExercise)
+	mux.HandleFunc("POST /exercise/save/{id}", handler.HandleSaveExercise)
+	mux.HandleFunc("GET /exercise/delete/{id}", handler.HandleDeleteExercise)
+
 	mux.HandleFunc("GET /exercises", handler.HandleGetExercises)
 	mux.HandleFunc("GET /exercise/{id}", handler.HandleGetExercise)
 	mux.HandleFunc("POST /exercise", handler.HandleAddExercise)
