@@ -63,6 +63,35 @@ func HandleAddExercise(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func HandleAddStrength(w http.ResponseWriter, r *http.Request) {
+	id_str := r.PathValue("id")
+	id, _ := utils.ConvertId(id_str)
+	switch r.Method {
+	case "GET":
+		tmpl := template.Must(template.ParseFiles("web/templates/addStrength.html"))
+		exercise, _ := storage.GetExercise(id)
+		tmpl.Execute(w, exercise)
+	case "POST":
+		createdAt := r.FormValue("createdAt")
+		createdAt_time, _ := utils.ConvertTime(createdAt)
+		load := r.FormValue("load")
+		storage.AddStrength(id, models.Strength{CreatedAt: createdAt_time, Load: load})
+		http.Redirect(w, r, "/", http.StatusFound)
+	}
+}
+
+func HandleDeleteStrength(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	createdAt := r.PathValue("createdAt")
+	createdAt_time, _ := utils.ConvertTime(createdAt)
+	err := storage.DeleteStrength(id, createdAt_time)
+	if err != nil {
+		errorHandling(w, 404)
+		log.Print(err)
+	}
+	http.Redirect(w, r, "/", http.StatusFound)
+}
+
 func HandleGetExercises(w http.ResponseWriter, r *http.Request) {
 	bytes, err := storage.GetExercisesBytes()
 	if err != nil {
@@ -131,8 +160,8 @@ func HandleUpdateExercise(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteExercise(w http.ResponseWriter, r *http.Request) {
-	name := r.PathValue("id")
-	err := storage.DeleteExercise(name)
+	id := r.PathValue("id")
+	err := storage.DeleteExercise(id)
 	if err != nil {
 		errorHandling(w, 404)
 		log.Print(err)

@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"strconv"
+	"time"
 
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 )
@@ -56,4 +57,12 @@ func ConvertId(id string) (int64, error) {
 		return -1, err
 	}
 	return id_int, nil
+}
+
+func ConvertTime(time_str string) (time.Time, error) {
+	time_conv, err := time.Parse("2006-01-02T15:04", time_str)
+	if err != nil {
+		return time_conv, err
+	}
+	return time_conv, nil
 }

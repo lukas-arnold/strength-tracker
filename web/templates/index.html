@@ -14,13 +14,24 @@
     <tr>
       <th>Muskelgruppe</th>
       <th>Übung</th>
+      <th>Kraftverlauf</th>
     </tr>
     <tr>
       {{range .}}
-        <td>{{.MuscleGroup}}</td>
-        <td>{{.Name}}</td>
         <td><a href="/exercise/edit/{{.Id}}">edit</a></td>
         <td><a href="/exercise/delete/{{.Id}}">delete</a></td>
+        <td><a href="/strength/add/{{.Id}}">add weight</a></td>
+        <td>{{.MuscleGroup}}</td>
+        <td>{{.Name}}</td>
+        <td>
+          <ul>
+            {{range .StrengthHistory}}
+              <li>{{.CreatedAt}}</li>
+              <li>{{.Load}}</li>
+              <li><a href="/strength/delete/{{.Id}}">delete</a></li>
+            {{end}}
+          </ul>
+        </td>
         <!-- <td>
           <ul>
             {{range .StrengthHistory}}

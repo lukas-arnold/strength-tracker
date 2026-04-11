@@ -51,6 +51,20 @@ func AddExercise(exercise models.Exercise) error {
 	return nil
 }
 
+func AddStrength(id int64, strength models.Strength) error {
+	exercise, err := GetExercise(id)
+	if err != nil {
+		return err
+	}
+	strengtHistory := append(exercise.StrengthHistory, strength)
+	exercise.StrengthHistory = strengtHistory
+	err = UpdateExercise(exercise)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetExercise(id int64) (models.ExerciseFull, error) {
 	exercises, err := GetExercises()
 	if err != nil {
