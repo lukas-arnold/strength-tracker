@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Strength Tracker</title>
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+>
+</head>
+
+<body>
+
+<h1>History of {{.Name}}</h1>
+
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Load</th>
+    </tr>
+    <tr>
+        {{range .StrengthHistory}}
+            <tr>
+                <td>{{.Date}}</td>
+                <td>{{.Load}}</td>
+                <td>
+                    <form action="/strength/edit/{{.Id}}">
+                        <input type="submit" value="Edit" />
+                    </form>
+                    <form action="/strength/delete/{{.Id}}">
+                        <input type="submit" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        {{end}}
+    </tr>
+</table>
+
+</body>
+
+</html>

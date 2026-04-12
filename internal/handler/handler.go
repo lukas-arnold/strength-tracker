@@ -14,7 +14,7 @@ func errorHandling(w http.ResponseWriter, httpStatusCode int) {
 
 func HandleView(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("web/templates/index.html"))
-	exercises, err := storage.GetExercises()
+	exercises, err := storage.GetExercisesWithLastStrength()
 	if err != nil {
 		errorHandling(w, 404)
 		log.Print(err)

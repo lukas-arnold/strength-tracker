@@ -2,6 +2,7 @@ package storage
 
 import (
 	"slices"
+	"sort"
 
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
@@ -33,6 +34,26 @@ func GetExercises() ([]models.Exercise, error) {
 	return exercises, nil
 }
 
+func GetExercisesWithLastStrength() ([]models.ExerciseWithLastStrength, error) {
+	bytes, err := readStorage()
+	if err != nil {
+		return nil, err
+	}
+	exercises, err := utils.ConvertBytesToExercises(bytes)
+	if err != nil {
+		return nil, err
+	}
+	var exercisesWithLastStrength []models.ExerciseWithLastStrength
+	for _, exercise := range exercises {
+		lastStrength, err := GetLastStrength(exercise.Id)
+		if err != nil {
+			return nil, err
+		}
+		exercisesWithLastStrength = append(exercisesWithLastStrength, models.ExerciseWithLastStrength{Exercise: exercise, LastStrength: lastStrength})
+	}
+	return exercisesWithLastStrength, nil
+}
+
 func GetExercise(id int64) (models.Exercise, error) {
 	exercises, err := GetExercises()
 	if err != nil {
@@ -42,22 +63,6 @@ func GetExercise(id int64) (models.Exercise, error) {
 	for _, value := range exercises {
 		if value.Id == id {
 			exercise = value
-		}
-	}
-	return exercise, nil
-}
-
-func GetExerciseByStrength(strengthId int64) (models.Exercise, error) {
-	exercises, err := GetExercises()
-	if err != nil {
-		return models.Exercise{}, err
-	}
-	var exercise models.Exercise
-	for _, value := range exercises {
-		for _, strength := range value.StrengthHistory {
-			if strength.Id == strengthId {
-				exercise = value
-			}
 		}
 	}
 	return exercise, nil
@@ -99,4 +104,17 @@ func DeleteExercise(id int64) error {
 		return err
 	}
 	return nil
+}
+
+func sortExercises(exercises []models.Exercise) []models.Exercise {
+	sort.Slice(exercises, func(i, j int) bool {
+		if exercises[i].MuscleGroup != exercises[j].MuscleGroup {
+			return exercises[i].MuscleGroup < exercises[j].MuscleGroup
+		}
+		if exercises[i].Name != exercises[j].Name {
+			return exercises[i].Name < exercises[j].Name
+		}
+		return false
+	})
+	return exercises
 }

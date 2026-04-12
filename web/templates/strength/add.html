@@ -1,7 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Strength Tracker</title>
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+>
+</head>
+
+<body>
+
 <h1>Add strength for exercise {{.Name}}</h1>
 
 <form action="/strength/add/{{.Id}}" method="POST">
-<div><input name="date" type="date"></div>
-<div><input name="load" type="number"></div>
-<div><input type="submit" value="Save"></div>
+    <div><input name="date" type="date"></div>
+    <div><input name="load" type="number"></div>
+    <div><input type="submit" value="Save"></div>
 </form>
+
+</body>
+
+</html>

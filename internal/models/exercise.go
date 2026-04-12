@@ -10,3 +10,8 @@ type Exercise struct {
 	ExerciseInput
 	StrengthHistory []Strength `json:"StrengthHistory"`
 }
+
+type ExerciseWithLastStrength struct {
+	Exercise
+	LastStrength Strength
+}

@@ -1,3 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Strength Tracker</title>
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+>
+</head>
+
+<body>
+    
 <h1>Editing {{.Id}}</h1>
 
 <form action="/exercise/save/{{.Id}}" method="POST">
@@ -5,3 +20,7 @@
 <div><textarea name="name">{{.Name}}</textarea></div>
 <div><input type="submit" value="Save"></div>
 </form>
+
+</body>
+
+</html>

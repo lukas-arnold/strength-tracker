@@ -49,12 +49,12 @@ func HandleEditStrength(w http.ResponseWriter, r *http.Request) {
 		errorHandling(w, 500)
 		log.Print(err)
 	}
-	exercise, err := storage.GetExerciseByStrength(id)
+	strength, err := storage.GetStrength(id)
 	if err != nil {
 		errorHandling(w, 404)
 		log.Print(err)
 	}
-	err = tmpl.Execute(w, exercise)
+	err = tmpl.Execute(w, strength)
 	if err != nil {
 		errorHandling(w, 500)
 		log.Print(err)

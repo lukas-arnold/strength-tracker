@@ -81,3 +81,22 @@ func HandleDeleteExercise(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/", http.StatusFound)
 }
+
+func HandleHistory(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("web/templates/exercise/history.html"))
+	id, err := utils.ConvertId(r.PathValue("id"))
+	if err != nil {
+		errorHandling(w, 500)
+		log.Print(err)
+	}
+	exercise, err := storage.GetExercise(id)
+	if err != nil {
+		errorHandling(w, 404)
+		log.Print(err)
+	}
+	err = tmpl.Execute(w, exercise)
+	if err != nil {
+		errorHandling(w, 500)
+		log.Print(err)
+	}
+}

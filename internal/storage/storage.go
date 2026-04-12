@@ -9,6 +9,7 @@ import (
 )
 
 func saveStorage(exercises []models.Exercise) error {
+	exercises = sortStorage(exercises)
 	bytes, err := utils.ConvertExercisesToBytes(exercises)
 	if err != nil {
 		return err
@@ -34,4 +35,12 @@ func checkStorage() {
 	if err != nil {
 		saveStorage([]models.Exercise{})
 	}
+}
+
+func sortStorage(exercises []models.Exercise) []models.Exercise {
+	exercises = sortExercises(exercises)
+	for i := range exercises {
+		exercises[i].StrengthHistory = sortStrengths(exercises[i].StrengthHistory)
+	}
+	return exercises
 }

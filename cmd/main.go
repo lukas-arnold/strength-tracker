@@ -18,6 +18,7 @@ func main() {
 	mux.HandleFunc("GET /exercise/edit/{id}", handler.HandleEditExercise)
 	mux.HandleFunc("POST /exercise/save/{id}", handler.HandleSaveExercise)
 	mux.HandleFunc("GET /exercise/delete/{id}", handler.HandleDeleteExercise)
+	mux.HandleFunc("GET /exercise/history/{id}", handler.HandleHistory)
 
 	mux.HandleFunc("GET /strength/add/{exerciseId}", handler.HandleAddStrengthGet)
 	mux.HandleFunc("POST /strength/add/{exerciseId}", handler.HandleAddStrengthPost)

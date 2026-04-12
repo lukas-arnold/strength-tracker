@@ -2,6 +2,7 @@ package storage
 
 import (
 	"slices"
+	"sort"
 
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
@@ -37,6 +38,26 @@ func GetStrength(id int64) (models.Strength, error) {
 		}
 	}
 	return strength, nil
+}
+
+func GetLastStrength(exerciseId int64) (models.Strength, error) {
+	exercises, err := GetExercises()
+	if err != nil {
+		return models.Strength{}, err
+	}
+	var exercise models.Exercise
+	for _, value := range exercises {
+		if value.Id == exerciseId {
+			exercise = value
+		}
+	}
+	strengthHistoryLength := len(exercise.StrengthHistory)
+	var lastStrength models.Strength
+	if strengthHistoryLength >= 1 {
+		lastStrength = exercise.StrengthHistory[len(exercise.StrengthHistory)-1]
+		return lastStrength, nil
+	}
+	return models.Strength{}, nil
 }
 
 func UpdateStrength(strength models.Strength) error {
@@ -78,4 +99,11 @@ func DeleteStrength(id int64) error {
 		return err
 	}
 	return nil
+}
+
+func sortStrengths(strengths []models.Strength) []models.Strength {
+	sort.Slice(strengths, func(i, j int) bool {
+		return strengths[i].Date < strengths[j].Date
+	})
+	return strengths
 }

@@ -5,37 +5,53 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Strength Tracker</title>
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+>
 </head>
 
 <body>
-  <a href="/exercise/add">add</a>
-
+  
   <table>
     <tr>
-      <th>Muskelgruppe</th>
-      <th>Übung</th>
-      <th>Kraftverlauf</th>
+      <th>Muscle Group</th>
+      <th>Exercise</th>
+      <th>Last load</th>
+      <th>Strength History</th>
     </tr>
     <tr>
       {{range .}}
-        <td><a href="/exercise/edit/{{.Id}}">edit</a></td>
-        <td><a href="/exercise/delete/{{.Id}}">delete</a></td>
-        <td><a href="/strength/add/{{.Id}}">add weight</a></td>
+      <tr>
         <td>{{.MuscleGroup}}</td>
         <td>{{.Name}}</td>
         <td>
-          <ul>
-            {{range .StrengthHistory}}
-              <li>{{.Date}}</li>
-              <li>{{.Load}}</li>
-              <li><a href="/strength/edit/{{.Id}}">edit</a></li>
-              <li><a href="/strength/delete/{{.Id}}">delete</a></li>
-            {{end}}
-          </ul>
+          <div>{{.LastStrength.Load}}</div>
+          <div>{{.LastStrength.Date}}</div>
+          <form action="/exercise/history/{{.Id}}">
+            <input type="submit" value="Full History" />
+          </form>
         </td>
+        <td>
+          <form action="/strength/add/{{.Id}}">
+              <input type="submit" value="Add strength" />
+          </form>
+          <form action="/exercise/edit/{{.Id}}">
+              <input type="submit" value="Edit" />
+          </form>
+          <form action="/exercise/delete/{{.Id}}">
+              <input type="submit" value="Delete" />
+          </form>
+        </td>
+      </tr>
       {{end}}
     </tr>
   </table>
+
+  <form action="/exercise/add">
+    <input type="submit" value="Add exercise" />
+  </form>
+
 </body>
 
 </html>
