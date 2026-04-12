@@ -3,20 +3,11 @@ package utils
 import (
 	"encoding/json"
 	"strconv"
-	"time"
 
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 )
 
-func ConvertExerciseToBytes(exercise models.ExerciseFull) ([]byte, error) {
-	bytes, err := json.Marshal(exercise)
-	if err != nil {
-		return nil, err
-	}
-	return bytes, nil
-}
-
-func ConvertExercisesToBytes(exercises []models.ExerciseFull) ([]byte, error) {
+func ConvertExercisesToBytes(exercises []models.Exercise) ([]byte, error) {
 	bytes, err := json.Marshal(exercises)
 	if err != nil {
 		return nil, err
@@ -24,26 +15,8 @@ func ConvertExercisesToBytes(exercises []models.ExerciseFull) ([]byte, error) {
 	return bytes, nil
 }
 
-func ConvertBytesToExercise(bytes []byte) (models.ExerciseFull, error) {
-	var exercise models.ExerciseFull
-	err := json.Unmarshal(bytes, &exercise)
-	if err != nil {
-		return exercise, err
-	}
-	return exercise, nil
-}
-
-func ConvertBytesToAddExercise(bytes []byte) (models.Exercise, error) {
-	var exercise models.Exercise
-	err := json.Unmarshal(bytes, &exercise)
-	if err != nil {
-		return exercise, err
-	}
-	return exercise, nil
-}
-
-func ConvertBytesToExercises(bytes []byte) ([]models.ExerciseFull, error) {
-	var exercises []models.ExerciseFull
+func ConvertBytesToExercises(bytes []byte) ([]models.Exercise, error) {
+	var exercises []models.Exercise
 	err := json.Unmarshal(bytes, &exercises)
 	if err != nil {
 		return exercises, err
@@ -51,18 +24,18 @@ func ConvertBytesToExercises(bytes []byte) ([]models.ExerciseFull, error) {
 	return exercises, nil
 }
 
-func ConvertId(id string) (int64, error) {
-	id_int, err := strconv.ParseInt(id, 10, 64)
+func ConvertId(idStr string) (int64, error) {
+	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
 		return -1, err
 	}
-	return id_int, nil
+	return id, nil
 }
 
-func ConvertTime(time_str string) (time.Time, error) {
-	time_conv, err := time.Parse("2006-01-02T15:04", time_str)
+func ConvertLoad(loadStr string) (float64, error) {
+	load, err := strconv.ParseFloat(loadStr, 64)
 	if err != nil {
-		return time_conv, err
+		return -1, err
 	}
-	return time_conv, nil
+	return load, nil
 }

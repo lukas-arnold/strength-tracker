@@ -1,0 +1,9 @@
+<h1>Editing strength for exercise {{.Name}}</h1>
+
+{{range .StrengthHistory}}
+    <form action="/strength/save/{{.Id}}" method="POST">
+        <div><input name="date" type="date"></div>
+        <div><input name="load" type="number"></div>
+        <div><input type="submit" value="Save"></div>
+    </form>
+{{end}}

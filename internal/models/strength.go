@@ -1,8 +1,11 @@
 package models
 
-import "time"
+type StrengthInput struct {
+	Date string  `json:"Date"`
+	Load float64 `json:"Load"`
+}
 
 type Strength struct {
-	CreatedAt time.Time `json:"CreatedAt"`
-	Load      string    `json:"Load"`
+	Id int64 `json:"Id"`
+	StrengthInput
 }

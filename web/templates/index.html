@@ -26,19 +26,13 @@
         <td>
           <ul>
             {{range .StrengthHistory}}
-              <li>{{.CreatedAt}}</li>
+              <li>{{.Date}}</li>
               <li>{{.Load}}</li>
+              <li><a href="/strength/edit/{{.Id}}">edit</a></li>
               <li><a href="/strength/delete/{{.Id}}">delete</a></li>
             {{end}}
           </ul>
         </td>
-        <!-- <td>
-          <ul>
-            {{range .StrengthHistory}}
-              <li>{{.Load}}</li>
-            {{end}}
-          </ul>
-        </td> -->
       {{end}}
     </tr>
   </table>

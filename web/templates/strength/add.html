@@ -1,7 +1,7 @@
 <h1>Add strength for exercise {{.Name}}</h1>
 
 <form action="/strength/add/{{.Id}}" method="POST">
-<div><input name="createdAt" type="datetime-local"></div>
+<div><input name="date" type="date"></div>
 <div><input name="load" type="number"></div>
 <div><input type="submit" value="Save"></div>
 </form>
