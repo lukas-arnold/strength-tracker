@@ -9,6 +9,7 @@
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 >
+  <script src="/js/format.js" defer></script>
 </head>
 
 <body>
@@ -26,8 +27,8 @@
         <td>{{.MuscleGroup}}</td>
         <td>{{.Name}}</td>
         <td>
-          <div>{{.LastStrength.Load}}</div>
-          <div>{{.LastStrength.Date}}</div>
+          <div class="load">{{.LastStrength.Load}}</div>
+          <div class="date">{{.LastStrength.Date}}</div>
           <form action="/exercise/history/{{.Id}}">
             <input type="submit" value="Full History" />
           </form>

@@ -25,3 +25,7 @@ func HandleView(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 }
+
+func HandleJavaScript(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "web/js/format.js")
+}

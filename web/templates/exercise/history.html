@@ -10,6 +10,7 @@
   href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 >
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/format.js" defer></script>
 </head>
 
 <body>
@@ -28,8 +29,8 @@
     <tr>
         {{range .StrengthHistory}}
             <tr>
-                <td>{{.Date}}</td>
-                <td>{{.Load}}</td>
+                <td class="date">{{.Date}}</td>
+                <td class="load">{{.Load}}</td>
                 <td>
                     <form action="/strength/edit/{{.Id}}">
                         <input type="submit" value="Edit" />
@@ -53,7 +54,7 @@
     data: {
       labels: {{.Dates}},
       datasets: [{
-        label: '# of Votes',
+        label: "Load",
         data: {{.Loads}},
         borderWidth: 1
       }]

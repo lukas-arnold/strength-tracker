@@ -12,6 +12,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /", handler.HandleView)
+	mux.HandleFunc("GET /js/format.js", handler.HandleJavaScript)
 
 	mux.HandleFunc("GET /exercise/add", handler.HandleAddExerciseGet)
 	mux.HandleFunc("POST /exercise/add", handler.HandleAddExercisePost)
