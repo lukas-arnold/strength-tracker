@@ -89,7 +89,7 @@ func HandleHistory(w http.ResponseWriter, r *http.Request) {
 		errorHandling(w, 500)
 		log.Print(err)
 	}
-	exercise, err := storage.GetExercise(id)
+	exercise, err := storage.GetExerciseForHistoryChart(id)
 	if err != nil {
 		errorHandling(w, 404)
 		log.Print(err)

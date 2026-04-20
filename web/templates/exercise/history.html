@@ -9,11 +9,16 @@
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 >
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<h1>History of {{.Name}}</h1>
+<h1>History of {{.Name}} {{.MuscleGroup}}</h1>
+
+<div>
+  <canvas id="historyChart"></canvas>
+</div>
 
 <table>
     <tr>
@@ -39,5 +44,28 @@
 </table>
 
 </body>
+
+<script>
+  const ctx = document.getElementById('historyChart');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{.Dates}},
+      datasets: [{
+        label: '# of Votes',
+        data: {{.Loads}},
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
 
 </html>

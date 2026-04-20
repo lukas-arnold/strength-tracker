@@ -15,3 +15,9 @@ type ExerciseWithLastStrength struct {
 	Exercise
 	LastStrength Strength
 }
+
+type ExerciseForHistoryChart struct {
+	Exercise
+	Dates []string
+	Loads []float64
+}

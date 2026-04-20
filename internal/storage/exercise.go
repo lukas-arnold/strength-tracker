@@ -68,6 +68,21 @@ func GetExercise(id int64) (models.Exercise, error) {
 	return exercise, nil
 }
 
+func GetExerciseForHistoryChart(id int64) (models.ExerciseForHistoryChart, error) {
+	exercise, err := GetExercise(id)
+	if err != nil {
+		return models.ExerciseForHistoryChart{}, err
+	}
+	var dates []string
+	var loads []float64
+	for _, value := range exercise.StrengthHistory {
+		dates = append(dates, value.Date)
+		loads = append(loads, value.Load)
+	}
+	exerciseForHistoryChart := models.ExerciseForHistoryChart{Exercise: models.Exercise{Id: exercise.Id, ExerciseInput: models.ExerciseInput{Name: exercise.Name, MuscleGroup: exercise.MuscleGroup}, StrengthHistory: exercise.StrengthHistory}, Dates: dates, Loads: loads}
+	return exerciseForHistoryChart, nil
+}
+
 func UpdateExercise(exercise models.Exercise) error {
 	exercises, err := GetExercises()
 	if err != nil {
