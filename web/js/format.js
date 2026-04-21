@@ -20,6 +20,6 @@ function formatLoads() {
         let load = element.textContent;
         load = load.replace(".", ",");
         load += " kg";
-        element.textContent = load
+        element.textContent = load;
     });
 }
