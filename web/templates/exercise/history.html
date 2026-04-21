@@ -50,7 +50,7 @@
   function formatDate(date) {
     date = new Date(date);
     const options = {year: "numeric", month: "2-digit", day: "2-digit"};
-    date = date.toLocaleDateString(undefined, options);
+    date = date.toLocaleDateString("default", options);
     return date;
   }
 </script>

@@ -16,9 +16,9 @@
 <h1>Editing {{.Id}}</h1>
 
 <form action="/exercise/save/{{.Id}}" method="POST">
-<div><textarea name="muscleGroup">{{.MuscleGroup}}</textarea></div>
-<div><textarea name="name">{{.Name}}</textarea></div>
-<div><input type="submit" value="Save"></div>
+  <div><input name="muscleGroup" value="{{.MuscleGroup}}"></div>
+  <div><input name="name" value="{{.Name}}"></div>
+  <div><input type="submit" value="Save"></div>
 </form>
 
 </body>

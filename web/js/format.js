@@ -9,7 +9,7 @@ function formatDates() {
     dateElements.forEach(element => {
         const originalDate = new Date(element.textContent);
         const options = {year: "numeric", month: "2-digit", day: "2-digit"};
-        element.textContent = originalDate.toLocaleDateString(undefined, options);
+        element.textContent = originalDate.toLocaleDateString("default", options);
     });
 }
 

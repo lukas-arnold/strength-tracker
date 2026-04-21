@@ -27,5 +27,6 @@ func HandleView(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleJavaScript(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "web/js/format.js")
+	filePath := "web/js/" + r.PathValue("fileName")
+	http.ServeFile(w, r, filePath)
 }

@@ -16,8 +16,8 @@
 <h1>Editing strength</h1>
 
 <form action="/strength/save/{{.Id}}" method="POST">
-    <div><input name="date" placeholder="{{.Date}}" type="date"></div>
-    <div><input name="load" placeholder="{{.Load}}" type="number" step="0.01"></div>
+    <div><input name="date" value="{{.Date}}" type="date"></div>
+    <div><input name="load" value="{{.Load}}" type="number" step="0.01"></div>
     <div><input type="submit" value="Save"></div>
 </form>
 
