@@ -51,6 +51,12 @@ func GetExercisesWithLastStrength() ([]models.ExerciseWithLastStrength, error) {
 		}
 		exercisesWithLastStrength = append(exercisesWithLastStrength, models.ExerciseWithLastStrength{Exercise: exercise, LastStrength: lastStrength})
 	}
+	for i := range exercisesWithLastStrength {
+		if exercisesWithLastStrength[i].LastStrength.Load == 0 {
+			exercisesWithLastStrength[i].LastStrength.Load = -1
+			exercisesWithLastStrength[i].LastStrength.Date = "1970-01-01"
+		}
+	}
 	return exercisesWithLastStrength, nil
 }
 
