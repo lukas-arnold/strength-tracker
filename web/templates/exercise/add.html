@@ -15,10 +15,21 @@
 
 <h1>Add exercise</h1>
 
-<form action="/exercise/add" method="POST">
-  <div><input name="muscleGroup"></div>
-  <div><input name="name"></div>
-  <div><input type="submit" value="Save"></div>
+<form action="/exercise/add" method="POST"></form>
+  <fieldset class="grid">
+    <input 
+      name="name"
+      placeholder="Name"
+    />
+    <input
+      name="muscleGroup"
+      placeholder="Muscle Group"
+    />
+    <input
+      type="submit"
+      value="Save"
+    />
+  </fieldset>
 </form>
 
 </body>

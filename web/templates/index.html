@@ -9,45 +9,52 @@
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 >
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="/js/format.js" defer></script>
 </head>
 
 <body>
-  
-  <table>
-    <tr>
-      <th>Muscle Group</th>
-      <th>Exercise</th>
-      <th>Last load</th>
-      <th>Strength History</th>
-    </tr>
-    <tr>
-      {{range .}}
-      <tr>
-        <td>{{.MuscleGroup}}</td>
-        <td>{{.Name}}</td>
-        <td>
-          <div class="load">{{.LastStrength.Load}}</div>
-          <div class="date">{{.LastStrength.Date}}</div>
-          <form action="/exercise/history/{{.Id}}">
-            <input type="submit" value="Full History" />
-          </form>
-        </td>
-        <td>
-          <form action="/strength/add/{{.Id}}">
-              <input type="submit" value="Add strength" />
-          </form>
-          <form action="/exercise/edit/{{.Id}}">
-              <input type="submit" value="Edit" />
-          </form>
-          <form action="/exercise/delete/{{.Id}}">
-              <input type="submit" value="Delete" />
-          </form>
-        </td>
-      </tr>
-      {{end}}
-    </tr>
-  </table>
+
+  <div class="table-cards">
+    <table>
+      <thead>
+        <tr>
+          <th>Exercise</th>
+          <th>Strength</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .}}
+        <tr>
+          <td>
+            <div>{{.Name}}</div>
+            <div>({{.MuscleGroup}})</div>
+          <td>
+            <div class="load">{{.LastStrength.Load}}</div>
+            <div class="date">{{.LastStrength.Date}}</div>
+            <form action="/exercise/history/{{.Id}}">
+              <button type="submit" class="secondary"><i class="fa-solid fa-clock-rotate-left"></i></button>
+            </form>
+          </td>
+          <td>
+            <article>
+              <form action="/strength/add/{{.Id}}">
+                <button type="submit"><i class="fa-solid fa-plus"></i></button>
+              </form>
+              <form action="/exercise/edit/{{.Id}}">
+                <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
+              </form>
+              <form action="/exercise/delete/{{.Id}}">
+                <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
+              </form>
+            </article>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
 
   <form action="/exercise/add">
     <input type="submit" value="Add exercise" />
