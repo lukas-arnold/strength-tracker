@@ -5,16 +5,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Strength Tracker</title>
-  <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
->
-<script src="/js/today.js" defer></script>
+  <link rel="stylesheet" href="/web/css/pico.min.css">
+  <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
+  <link rel="stylesheet" href="/web/assets/fontawesome/css/solid.min.css">
+  <script src="/js/today.js" defer></script>
 </head>
 
 <body>
 
-<h1>Add strength for exercise {{.Name}}</h1>
+<div role="group">
+   <a href="/">
+    <button class="outline primary"><i class="fa-solid fa-arrow-left"></i></button>
+  </a>
+  <h1>Add strength for exercise {{.Name}}</h1>
+</div>
 
 <form action="/strength/add/{{.Id}}" method="POST">
     <div><input name="date" type="date" id="date"></div>

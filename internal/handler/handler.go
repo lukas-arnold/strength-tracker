@@ -26,7 +26,6 @@ func HandleView(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func HandleJavaScript(w http.ResponseWriter, r *http.Request) {
-	filePath := "web/js/" + r.PathValue("fileName")
-	http.ServeFile(w, r, filePath)
+func HandleFiles(w http.ResponseWriter, r *http.Request) {
+	http.StripPrefix("/web/", http.FileServer(http.Dir("web"))).ServeHTTP(w, r)
 }
