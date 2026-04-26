@@ -6,25 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Strength Tracker</title>
   <link rel="stylesheet" href="/web/css/pico.min.css">
+  <link rel="stylesheet" href="/web/css/center.css">
   <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
   <link rel="stylesheet" href="/web/assets/fontawesome/css/solid.min.css">
-  <script src="/js/today.js" defer></script>
+  <script src="/web/js/today.js" defer></script>
 </head>
 
 <body>
 
-<div role="group">
-   <a href="/">
-    <button class="outline primary"><i class="fa-solid fa-arrow-left"></i></button>
-  </a>
-  <h1>Add strength for exercise {{.Name}}</h1>
-</div>
+<header>
+    <div class="center">
+      <a href="/">
+        <button class="outline primary"><i class="fa-solid fa-home"></i></button>
+      </a>
+    </div>
+    <br>
+    <div class="center">
+      <h1>Add Strength</h1>
+    </div>
+    <div class="center">
+      <h2>{{.Name}} ({{.MuscleGroup}})</h2>
+    </div>
+</header>
 
-<form action="/strength/add/{{.Id}}" method="POST">
-    <div><input name="date" type="date" id="date"></div>
-    <div><input name="load" type="number" step="0.01"></div>
-    <div><input type="submit" value="Save"></div>
-</form>
+<main class="container.fluid">
+  <form action="/strength/add/{{.Id}}" method="POST">
+      <div><input name="date" type="date" id="date"></div>
+      <div><input name="load" type="number" step="0.01"></div>
+      <div><input type="submit" value="Save"></div>
+  </form>
+</main>
 
 </body>
 

@@ -7,57 +7,64 @@
   <title>Strength Tracker</title>
   <link rel="icon" type="image/x-icon" href="/web/assets/favicon.ico">
   <link rel="stylesheet" href="/web/css/pico.min.css">
+  <link rel="stylesheet" href="/web/css/center.css">
   <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
   <link rel="stylesheet" href="/web/assets/fontawesome/css/solid.min.css">
-  <script src="/js/format.js" defer></script>
+  <script src="/web/js/format.js" defer></script>
 </head>
 
 <body>
 
-  <div class="table-cards">
-    <table>
-      <thead>
-        <tr>
-          <th>Exercise</th>
-          <th>Strength</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{range .}}
-        <tr>
-          <td>
-            <div>{{.Name}}</div>
-            <div>({{.MuscleGroup}})</div>
-          <td>
-            <div class="load">{{.LastStrength.Load}}</div>
-            <div class="date">{{.LastStrength.Date}}</div>
-            <form action="/exercise/history/{{.Id}}">
-              <button type="submit" class="secondary"><i class="fa-solid fa-clock-rotate-left"></i></button>
-            </form>
-          </td>
-          <td>
-            <article>
-              <form action="/strength/add/{{.Id}}">
-                <button type="submit"><i class="fa-solid fa-plus"></i></button>
-              </form>
-              <form action="/exercise/edit/{{.Id}}">
-                <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
-              </form>
-              <form action="/exercise/delete/{{.Id}}">
-                <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
-              </form>
-            </article>
-          </td>
-        </tr>
-        {{end}}
-      </tbody>
-    </table>
-  </div>
+  <header>
+    <h1 class="center">Strength Tracker</h1>
+  </header>
 
-  <form action="/exercise/add">
-    <input type="submit" value="Add exercise" />
-  </form>
+  <main class="container-fluid">
+    <div class="table-cards">
+      <table>
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Strength</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .}}
+          <tr>
+            <td>
+              <div>{{.Name}}</div>
+              <div>({{.MuscleGroup}})</div>
+            <td>
+              <div class="load">{{.LastStrength.Load}}</div>
+              <div class="date">{{.LastStrength.Date}}</div>
+              <form action="/exercise/history/{{.Id}}">
+                <button type="submit" class="secondary"><i class="fa-solid fa-clock-rotate-left"></i></button>
+              </form>
+            </td>
+            <td>
+              <article>
+                <form action="/strength/add/{{.Id}}">
+                  <button type="submit"><i class="fa-solid fa-plus"></i></button>
+                </form>
+                <form action="/exercise/edit/{{.Id}}">
+                  <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
+                </form>
+                <form action="/exercise/delete/{{.Id}}">
+                  <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
+                </form>
+              </article>
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+
+    <form action="/exercise/add">
+      <input type="submit" value="Add Strength" />
+    </form>
+  </main>
 
 </body>
 
