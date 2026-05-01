@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='{{T "language"}}'>
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Strength Tracker</title>
+  <title>{{T "title"}}</title>
   <link rel="stylesheet" href="/web/css/pico.min.css">
   <link rel="stylesheet" href="/web/css/center.css">
   <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
@@ -21,7 +21,7 @@
     </div>
     <br>
     <div class="center">
-      <h1>Edit Exercise</h1>
+      <h1>{{T "editExercise"}}</h1>
     </div>
     <div class="center">
       <h2>{{.Name}} ({{.MuscleGroup}})</h2>
@@ -32,7 +32,7 @@
   <form action="/exercise/save/{{.Id}}" method="POST">
     <div><input name="muscleGroup" value="{{.MuscleGroup}}"></div>
     <div><input name="name" value="{{.Name}}"></div>
-    <div><input type="submit" value="Save"></div>
+    <div><input type="submit" value='{{T "save"}}'></div>
   </form>
 </main>
 

@@ -1,0 +1,17 @@
+{
+    "language": "en",
+    "title": "Strength Tracker",
+    "exercise": "Exercise",
+    "strength": "Strength",
+    "action": "Action",
+    "name": "Name",
+    "muscleGroup": "Muscle Group",
+    "strengthHistory": "Strength History",
+    "date": "Date",
+    "load": "Load",
+    "addExercise": "Add Exercise",
+    "addStrength": "Add Strength entry",
+    "editExercise": "Edit Exercise",
+    "editStrength": "Edit Strength entry",
+    "save": "Save"
+}

@@ -1,0 +1,17 @@
+{
+    "language": "de",
+    "title": "Strength Tracker",
+    "exercise": "Übung",
+    "strength": "Kraft",
+    "action": "Aktion",
+    "name": "Name",
+    "muscleGroup": "Muskelgruppe",
+    "strengthHistory": "Kraftentwicklung",
+    "date": "Datum",
+    "load": "Gewicht",
+    "addExercise": "Übung hinzufügen",
+    "addStrength": "Krafteintrag hinzufügen",
+    "editExercise": "Übung bearbeiten",
+    "editStrength": "Krafteintrag bearbeiten",
+    "save": "Speichern"
+}

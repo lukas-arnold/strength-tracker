@@ -5,13 +5,21 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/lukas-arnold/strength-tracker/internal/configs"
+	"github.com/lukas-arnold/strength-tracker/internal/language"
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 	"github.com/lukas-arnold/strength-tracker/internal/storage"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
 )
 
 func HandleAddExerciseGet(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("web/templates/exercise/add.html"))
+	tmpl := template.Must(
+		template.New("add.html").Funcs(template.FuncMap{
+			"T": func(key string) string {
+				return language.T(configs.LANGUAGE, key)
+			},
+		}).ParseFiles("web/templates/exercise/add.html"),
+	)
 	err := tmpl.Execute(w, nil)
 	if err != nil {
 		errorHandling(w, 500)
@@ -29,7 +37,13 @@ func HandleAddExercisePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleEditExercise(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("web/templates/exercise/edit.html"))
+	tmpl := template.Must(
+		template.New("edit.html").Funcs(template.FuncMap{
+			"T": func(key string) string {
+				return language.T(configs.LANGUAGE, key)
+			},
+		}).ParseFiles("web/templates/exercise/edit.html"),
+	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {
 		errorHandling(w, 500)
@@ -83,7 +97,13 @@ func HandleDeleteExercise(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleHistory(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("web/templates/exercise/history.html"))
+	tmpl := template.Must(
+		template.New("history.html").Funcs(template.FuncMap{
+			"T": func(key string) string {
+				return language.T(configs.LANGUAGE, key)
+			},
+		}).ParseFiles("web/templates/exercise/history.html"),
+	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {
 		errorHandling(w, 500)

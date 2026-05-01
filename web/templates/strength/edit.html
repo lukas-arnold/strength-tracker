@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='{{T "language"}}'>
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Strength Tracker</title>
+  <title>{{T "title"}}</title>
   <link rel="stylesheet" href="/web/css/pico.min.css">
   <link rel="stylesheet" href="/web/css/center.css">
   <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
@@ -21,7 +21,7 @@
     </div>
     <br>
     <div class="center">
-      <h1>Edit Strength</h1>
+      <h1>{{T "editStrength"}}</h1>
     </div>
 </header>
 
@@ -29,7 +29,7 @@
   <form action="/strength/save/{{.Id}}" method="POST">
       <div><input name="date" value="{{.Date}}" type="date"></div>
       <div><input name="load" value="{{.Load}}" type="number" step="0.01"></div>
-      <div><input type="submit" value="Save"></div>
+      <div><input type="submit" value='{{T "save"}}'></div>
   </form>
 </main>
 

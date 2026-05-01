@@ -6,9 +6,15 @@ import (
 
 	"github.com/lukas-arnold/strength-tracker/internal/configs"
 	"github.com/lukas-arnold/strength-tracker/internal/handler"
+	"github.com/lukas-arnold/strength-tracker/internal/language"
 )
 
 func main() {
+	err := language.LoadLanguages()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /", handler.HandleView)

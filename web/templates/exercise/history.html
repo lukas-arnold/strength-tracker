@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='{{T "language"}}'>
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Strength Tracker</title>
+  <title>{{T "title"}}</title>
   <link rel="stylesheet" href="/web/css/pico.min.css">
   <link rel="stylesheet" href="/web/css/center.css">
   <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
@@ -21,7 +21,7 @@
     </div>
     <br>
     <div class="center">
-      <h1>Strength History</h1>
+      <h1>{{T "strengthHistory"}}</h1>
     </div>
     <div class="center">
       <h2>{{.Name}} ({{.MuscleGroup}})</h2>
@@ -35,8 +35,8 @@
 
   <table>
       <tr>
-          <th>Date</th>
-          <th>Load</th>
+          <th>{{T "date"}}</th>
+          <th>{{T "load"}}</th>
       </tr>
       <tr>
           {{range .StrengthHistory}}
@@ -57,7 +57,7 @@
   </table>
 
   <form action="/strength/add/{{.Id}}">
-    <input type="submit" value="Add Strength" />
+    <input type="submit" value='{{T "addStrength"}}' />
   </form>
 </main>
 
@@ -85,7 +85,7 @@
     data: {
       labels: {{.Dates}},
       datasets: [{
-        label: "Load",
+        label: '{{T "load"}}',
         data: {{.Loads}},
         borderWidth: 1
       }]

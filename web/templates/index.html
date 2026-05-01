@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='{{T "language"}}'>
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Strength Tracker</title>
+  <title>{{T "title"}}</title>
   <link rel="icon" type="image/x-icon" href="/web/assets/favicon.ico">
   <link rel="stylesheet" href="/web/css/pico.min.css">
   <link rel="stylesheet" href="/web/css/center.css">
@@ -24,9 +24,9 @@
       <table>
         <thead>
           <tr>
-            <th>Exercise</th>
-            <th>Strength</th>
-            <th>Action</th>
+            <th>{{T "exercise"}}</th>
+            <th>{{T "strength"}}</th>
+            <th>{{T "action"}}</th>
           </tr>
         </thead>
         <tbody>
@@ -62,7 +62,7 @@
     </div>
 
     <form action="/exercise/add">
-      <input type="submit" value="Add Strength" />
+      <input type="submit" value='{{T "addExercise"}}'/>
     </form>
   </main>
 

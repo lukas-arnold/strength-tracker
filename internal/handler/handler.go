@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/lukas-arnold/strength-tracker/internal/configs"
+	"github.com/lukas-arnold/strength-tracker/internal/language"
 	"github.com/lukas-arnold/strength-tracker/internal/storage"
 )
 
@@ -13,7 +15,13 @@ func errorHandling(w http.ResponseWriter, httpStatusCode int) {
 }
 
 func HandleView(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("web/templates/index.html"))
+	tmpl := template.Must(
+		template.New("index.html").Funcs(template.FuncMap{
+			"T": func(key string) string {
+				return language.T(configs.LANGUAGE, key)
+			},
+		}).ParseFiles("web/templates/index.html"),
+	)
 	exercises, err := storage.GetExercisesWithLastStrength()
 	if err != nil {
 		errorHandling(w, 404)

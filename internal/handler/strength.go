@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/lukas-arnold/strength-tracker/internal/configs"
+	"github.com/lukas-arnold/strength-tracker/internal/language"
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 	"github.com/lukas-arnold/strength-tracker/internal/storage"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
@@ -16,7 +18,13 @@ func HandleAddStrengthGet(w http.ResponseWriter, r *http.Request) {
 		errorHandling(w, 500)
 		log.Print(err)
 	}
-	tmpl := template.Must(template.ParseFiles("web/templates/strength/add.html"))
+	tmpl := template.Must(
+		template.New("add.html").Funcs(template.FuncMap{
+			"T": func(key string) string {
+				return language.T(configs.LANGUAGE, key)
+			},
+		}).ParseFiles("web/templates/strength/add.html"),
+	)
 	exercise, err := storage.GetExercise(exerciseId)
 	if err != nil {
 		errorHandling(w, 404)
@@ -43,7 +51,13 @@ func HandleAddStrengthPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleEditStrength(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("web/templates/strength/edit.html"))
+	tmpl := template.Must(
+		template.New("edit.html").Funcs(template.FuncMap{
+			"T": func(key string) string {
+				return language.T(configs.LANGUAGE, key)
+			},
+		}).ParseFiles("web/templates/strength/edit.html"),
+	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {
 		errorHandling(w, 500)
