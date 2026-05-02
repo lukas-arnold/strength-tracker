@@ -17,8 +17,10 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /", handler.HandleView)
+	mux.HandleFunc("GET /service-worker.js", handler.HandleServiceWorker)
 	mux.HandleFunc("GET /web/", handler.HandleFiles)
+
+	mux.HandleFunc("GET /", handler.HandleView)
 
 	mux.HandleFunc("GET /exercise/add", handler.HandleAddExerciseGet)
 	mux.HandleFunc("POST /exercise/add", handler.HandleAddExercisePost)

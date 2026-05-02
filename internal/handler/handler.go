@@ -14,6 +14,14 @@ func errorHandling(w http.ResponseWriter, httpStatusCode int) {
 	w.WriteHeader(httpStatusCode)
 }
 
+func HandleServiceWorker(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "service-worker.js")
+}
+
+func HandleFiles(w http.ResponseWriter, r *http.Request) {
+	http.StripPrefix("/web/", http.FileServer(http.Dir("web"))).ServeHTTP(w, r)
+}
+
 func HandleView(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
 		template.New("index.html").Funcs(template.FuncMap{
@@ -32,8 +40,4 @@ func HandleView(w http.ResponseWriter, r *http.Request) {
 		errorHandling(w, 500)
 		log.Print(err)
 	}
-}
-
-func HandleFiles(w http.ResponseWriter, r *http.Request) {
-	http.StripPrefix("/web/", http.FileServer(http.Dir("web"))).ServeHTTP(w, r)
 }
