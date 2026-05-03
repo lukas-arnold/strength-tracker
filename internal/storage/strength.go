@@ -85,18 +85,13 @@ func DeleteStrength(id int64) error {
 	if err != nil {
 		return err
 	}
-	var index int
 	for i := range exercises {
 		for j := range exercises[i].StrengthHistory {
 			if exercises[i].StrengthHistory[j].Id == id {
-				index = j
+				exercises[i].StrengthHistory = slices.Delete(exercises[i].StrengthHistory, j, j+1)
+				return saveStorage(exercises)
 			}
 		}
-		exercises[i].StrengthHistory = slices.Delete(exercises[i].StrengthHistory, index, index+1)
-	}
-	err = saveStorage(exercises)
-	if err != nil {
-		return err
 	}
 	return nil
 }
