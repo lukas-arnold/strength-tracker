@@ -34,5 +34,5 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/lukas-arnold/test:dev
-            ghcr.io/lukas-arnold/test:${{ github.sha }}
+            ghcr.io/lukas-arnold/strength-tracker:dev
+            ghcr.io/lukas-arnold/strength-tracker:${{ github.sha }}
