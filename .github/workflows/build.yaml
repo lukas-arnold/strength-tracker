@@ -1,10 +1,10 @@
-name: Pipeline
+name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ development ]
   pull_request:
-    branches: [ main ]
+    branches: [ development, main ]
 
 jobs:
   build:
@@ -34,5 +34,5 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/lukas-arnold/test:latest
+            ghcr.io/lukas-arnold/test:dev
             ghcr.io/lukas-arnold/test:${{ github.sha }}
