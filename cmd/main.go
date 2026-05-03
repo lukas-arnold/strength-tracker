@@ -17,6 +17,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("GET /service-worker", handler.HandleServiceWorker)
 	mux.HandleFunc("GET /web/", handler.HandleFiles)
 
 	mux.HandleFunc("GET /", handler.HandleView)

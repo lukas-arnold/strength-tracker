@@ -8,7 +8,7 @@ RUN CGO_ENABLED=0 go build -o app cmd/main.go
 
 FROM alpine:3.20
 
-WORKDIR /root/
-COPY --from=builder /app/app .
+WORKDIR /app
+COPY --from=builder /app/app ./strength-tracker
 
-CMD ["./app"]
+CMD ["./strength-tracker"]

@@ -26,21 +26,10 @@
 </header>
 
 <main class="container-fluid">
-  <form action="/exercise/add" method="POST"></form>
-    <fieldset class="grid">
-      <input 
-        name="name"
-        placeholder='{{T "name"}}'
-      />
-      <input
-        name="muscleGroup"
-        placeholder='{{T "muscleGroup"}}'
-      />
-      <input
-        type="submit"
-        value='{{T "save"}}'
-      />
-    </fieldset>
+  <form action="/exercise/add" method="POST">
+      <div><input name="name" placeholder='{{T "name"}}'></div>
+      <div><input name="muscleGroup" placeholder='{{T "muscleGroup"}}'></div>
+      <div><input type="submit" value='{{T "save"}}'></div>
   </form>
 </main>
 

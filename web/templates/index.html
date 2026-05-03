@@ -16,7 +16,7 @@
 
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/web/service-worker.js")
+  navigator.serviceWorker.register("/service-worker")
     .catch(err => console.error("Service Worker failed", err));
 }
 </script>

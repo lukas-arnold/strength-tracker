@@ -14,6 +14,10 @@ func errorHandling(w http.ResponseWriter, httpStatusCode int) {
 	w.WriteHeader(httpStatusCode)
 }
 
+func HandleServiceWorker(w http.ResponseWriter, r *http.Request) {
+	http.ServeFileFS(w, r, configs.GetWebFiles(), "service-worker.js")
+}
+
 func HandleFiles(w http.ResponseWriter, r *http.Request) {
 	http.StripPrefix("/web/", http.FileServerFS(configs.GetWebFiles())).ServeHTTP(w, r)
 }
