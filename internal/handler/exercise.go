@@ -16,9 +16,9 @@ func HandleAddExerciseGet(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
 		template.New("add.html").Funcs(template.FuncMap{
 			"T": func(key string) string {
-				return language.T(configs.LANGUAGE, key)
+				return language.T(configs.GetLanguage(), key)
 			},
-		}).ParseFiles("web/templates/exercise/add.html"),
+		}).ParseFS(configs.GetWebFiles(), "templates/exercise/add.html"),
 	)
 	err := tmpl.Execute(w, nil)
 	if err != nil {
@@ -40,9 +40,9 @@ func HandleEditExercise(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
 		template.New("edit.html").Funcs(template.FuncMap{
 			"T": func(key string) string {
-				return language.T(configs.LANGUAGE, key)
+				return language.T(configs.GetLanguage(), key)
 			},
-		}).ParseFiles("web/templates/exercise/edit.html"),
+		}).ParseFS(configs.GetWebFiles(), "templates/exercise/edit.html"),
 	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {
@@ -100,9 +100,9 @@ func HandleHistory(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
 		template.New("history.html").Funcs(template.FuncMap{
 			"T": func(key string) string {
-				return language.T(configs.LANGUAGE, key)
+				return language.T(configs.GetLanguage(), key)
 			},
-		}).ParseFiles("web/templates/exercise/history.html"),
+		}).ParseFS(configs.GetWebFiles(), "templates/exercise/history.html"),
 	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {

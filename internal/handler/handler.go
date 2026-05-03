@@ -14,21 +14,17 @@ func errorHandling(w http.ResponseWriter, httpStatusCode int) {
 	w.WriteHeader(httpStatusCode)
 }
 
-func HandleServiceWorker(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "service-worker.js")
-}
-
 func HandleFiles(w http.ResponseWriter, r *http.Request) {
-	http.StripPrefix("/web/", http.FileServer(http.Dir("web"))).ServeHTTP(w, r)
+	http.StripPrefix("/web/", http.FileServerFS(configs.GetWebFiles())).ServeHTTP(w, r)
 }
 
 func HandleView(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
 		template.New("index.html").Funcs(template.FuncMap{
 			"T": func(key string) string {
-				return language.T(configs.LANGUAGE, key)
+				return language.T(configs.GetLanguage(), key)
 			},
-		}).ParseFiles("web/templates/index.html"),
+		}).ParseFS(configs.GetWebFiles(), "templates/index.html"),
 	)
 	exercises, err := storage.GetExercisesWithLastStrength()
 	if err != nil {

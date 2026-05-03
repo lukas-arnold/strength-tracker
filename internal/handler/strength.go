@@ -21,9 +21,9 @@ func HandleAddStrengthGet(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
 		template.New("add.html").Funcs(template.FuncMap{
 			"T": func(key string) string {
-				return language.T(configs.LANGUAGE, key)
+				return language.T(configs.GetLanguage(), key)
 			},
-		}).ParseFiles("web/templates/strength/add.html"),
+		}).ParseFS(configs.GetWebFiles(), "templates/strength/add.html"),
 	)
 	exercise, err := storage.GetExercise(exerciseId)
 	if err != nil {
@@ -54,9 +54,9 @@ func HandleEditStrength(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
 		template.New("edit.html").Funcs(template.FuncMap{
 			"T": func(key string) string {
-				return language.T(configs.LANGUAGE, key)
+				return language.T(configs.GetLanguage(), key)
 			},
-		}).ParseFiles("web/templates/strength/edit.html"),
+		}).ParseFS(configs.GetWebFiles(), "templates/strength/edit.html"),
 	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {

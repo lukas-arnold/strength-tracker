@@ -17,7 +17,6 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /service-worker.js", handler.HandleServiceWorker)
 	mux.HandleFunc("GET /web/", handler.HandleFiles)
 
 	mux.HandleFunc("GET /", handler.HandleView)
@@ -35,5 +34,5 @@ func main() {
 	mux.HandleFunc("POST /strength/save/{id}", handler.HandleSaveStrength)
 	mux.HandleFunc("GET /strength/delete/{id}", handler.HandleDeleteStrength)
 
-	log.Fatal(http.ListenAndServe(configs.PORT, mux))
+	log.Fatal(http.ListenAndServe(configs.GetPort(), mux))
 }

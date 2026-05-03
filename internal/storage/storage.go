@@ -14,7 +14,7 @@ func saveStorage(exercises []models.Exercise) error {
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(configs.STORAGE_FILE, []byte(bytes), 0666)
+	err = os.WriteFile(configs.GetStorageFile(), []byte(bytes), 0666)
 	if err != nil {
 		return err
 	}
@@ -23,7 +23,7 @@ func saveStorage(exercises []models.Exercise) error {
 
 func readStorage() ([]byte, error) {
 	checkStorage()
-	bytes, err := os.ReadFile(configs.STORAGE_FILE)
+	bytes, err := os.ReadFile(configs.GetStorageFile())
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func readStorage() ([]byte, error) {
 }
 
 func checkStorage() {
-	_, err := os.ReadFile(configs.STORAGE_FILE)
+	_, err := os.ReadFile(configs.GetStorageFile())
 	if err != nil {
 		saveStorage([]models.Exercise{})
 	}

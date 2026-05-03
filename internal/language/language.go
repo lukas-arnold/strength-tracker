@@ -1,9 +1,12 @@
 package language
 
 import (
+	"embed"
 	"encoding/json"
-	"os"
 )
+
+//go:embed *.json
+var languageFiles embed.FS
 
 type Translations map[string]string
 
@@ -11,12 +14,12 @@ var languages = map[string]Translations{}
 
 func LoadLanguages() error {
 	files := map[string]string{
-		"en": "internal/locales/en.json",
-		"de": "internal/locales/de.json",
+		"en": "en.json",
+		"de": "de.json",
 	}
 
 	for lang, path := range files {
-		data, err := os.ReadFile(path)
+		data, err := languageFiles.ReadFile(path)
 		if err != nil {
 			return err
 		}
