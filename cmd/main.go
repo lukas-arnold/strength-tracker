@@ -35,5 +35,6 @@ func main() {
 	mux.HandleFunc("POST /strength/save/{id}", handler.HandleSaveStrength)
 	mux.HandleFunc("GET /strength/delete/{id}", handler.HandleDeleteStrength)
 
+	log.Printf("Strength Tracker running on %s", configs.GetPort())
 	log.Fatal(http.ListenAndServe(configs.GetPort(), mux))
 }

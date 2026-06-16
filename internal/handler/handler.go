@@ -10,8 +10,9 @@ import (
 	"github.com/lukas-arnold/strength-tracker/internal/storage"
 )
 
-func errorHandling(w http.ResponseWriter, httpStatusCode int) {
-	w.WriteHeader(httpStatusCode)
+func handleError(w http.ResponseWriter, err error, statusCode int) {
+	log.Printf("HTTP %d: %v", statusCode, err)
+	http.Error(w, http.StatusText(statusCode), statusCode)
 }
 
 func HandleServiceWorker(w http.ResponseWriter, r *http.Request) {
@@ -24,20 +25,20 @@ func HandleFiles(w http.ResponseWriter, r *http.Request) {
 
 func HandleView(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
-		template.New("index.html").Funcs(template.FuncMap{
+		template.New("base.html").Funcs(template.FuncMap{
 			"T": func(key string) string {
 				return language.T(configs.GetLanguage(), key)
 			},
-		}).ParseFS(configs.GetWebFiles(), "templates/index.html"),
+		}).ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/index.html"),
 	)
 	exercises, err := storage.GetExercisesWithLastStrength()
 	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
+		handleError(w, err, 404)
+		return
 	}
 	err = tmpl.Execute(w, exercises)
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, 500)
+		return
 	}
 }

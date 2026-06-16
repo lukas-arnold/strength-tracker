@@ -1,41 +1,13 @@
-<!DOCTYPE html>
-<html lang='{{T "language"}}'>
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{T "title"}}</title>
-  <link rel="stylesheet" href="/web/css/pico.min.css">
-  <link rel="stylesheet" href="/web/css/center.css">
-  <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
-  <link rel="stylesheet" href="/web/assets/fontawesome/css/solid.min.css">
-</head>
-
-<body>
-
-<header>
-    <div class="center">
-      <a href="/">
-        <button class="outline primary"><i class="fa-solid fa-home"></i></button>
-      </a>
-    </div>
-    <br>
-    <div class="center">
-      <h1>{{T "editExercise"}}</h1>
-    </div>
-    <div class="center">
-      <h2>{{.Name}} ({{.MuscleGroup}})</h2>
-    </div>
-</header>
-
-<main class="container-fluid">
-  <form action="/exercise/save/{{.Id}}" method="POST">
-    <div><input name="muscleGroup" value="{{.MuscleGroup}}"></div>
-    <div><input name="name" value="{{.Name}}"></div>
-    <div><input type="submit" value='{{T "save"}}'></div>
-  </form>
-</main>
-
-</body>
-
-</html>
+{{define "template"}}
+<div class="center">
+  <h1>{{T "editExercise"}}</h1>
+</div>
+<div class="center">
+  <h2>{{.Name}} ({{.MuscleGroup}})</h2>
+</div>
+<form action="/exercise/save/{{.Id}}" method="POST">
+  <div><input name="muscleGroup" value="{{.MuscleGroup}}"></div>
+  <div><input name="name" value="{{.Name}}"></div>
+  <div><input type="submit" value='{{T "save"}}'></div>
+</form>
+{{end}}

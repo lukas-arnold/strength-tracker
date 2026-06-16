@@ -1,68 +1,38 @@
-<!DOCTYPE html>
-<html lang='{{T "language"}}'>
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{T "title"}}</title>
-  <link rel="stylesheet" href="/web/css/pico.min.css">
-  <link rel="stylesheet" href="/web/css/center.css">
-  <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
-  <link rel="stylesheet" href="/web/assets/fontawesome/css/solid.min.css">
-  <script src="/web/js/chart.min.js"></script>
-  <script src="/web/js/format.js" defer></script>
-</head>
-
-<header>
-    <div class="center">
-      <a href="/">
-        <button class="outline primary"><i class="fa-solid fa-home"></i></button>
-      </a>
-    </div>
-    <br>
-    <div class="center">
-      <h1>{{T "strengthHistory"}}</h1>
-    </div>
-    <div class="center">
-      <h2>{{.Name}} ({{.MuscleGroup}})</h2>
-    </div>
-</header>
-
-<main class="container-fluid">
-  <div>
-    <canvas id="historyChart"></canvas>
-  </div>
-
-  <table>
-      <tr>
-          <th>{{T "date"}}</th>
-          <th>{{T "load"}}</th>
-      </tr>
-      <tr>
-          {{range .StrengthHistory}}
-              <tr>
-                  <td class="date">{{.Date}}</td>
-                  <td class="load">{{.Load}}</td>
-                  <td>
-                      <form action="/strength/edit/{{.Id}}">
-                          <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
-                      </form>
-                      <form action="/strength/delete/{{.Id}}">
-                          <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
-                      </form>
-                  </td>
-              </tr>
-          {{end}}
-      </tr>
-  </table>
-
-  <form action="/strength/add/{{.Id}}">
-    <input type="submit" value='{{T "addStrength"}}' />
-  </form>
-</main>
-
-</body>
-
+{{define "template"}}
+<div class="center">
+  <h1>{{T "strengthHistory"}}</h1>
+</div>
+<div class="center">
+  <h2>{{.Name}} ({{.MuscleGroup}})</h2>
+</div>
+<div>
+  <canvas id="historyChart"></canvas>
+</div>
+<table>
+    <tr>
+        <th>{{T "date"}}</th>
+        <th>{{T "load"}}</th>
+    </tr>
+    <tr>
+        {{range .StrengthHistory}}
+            <tr>
+                <td class="date">{{.Date}}</td>
+                <td class="load">{{.Load}}</td>
+                <td>
+                    <form action="/strength/edit/{{.Id}}">
+                        <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
+                    </form>
+                    <form action="/strength/delete/{{.Id}}">
+                        <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
+                    </form>
+                </td>
+            </tr>
+        {{end}}
+    </tr>
+</table>
+<form action="/strength/add/{{.Id}}">
+  <input type="submit" value='{{T "addStrength"}}' />
+</form>
 <script>
   function formatLoad(load) {
     load = load.replace(".", ",");
@@ -76,7 +46,6 @@
     return date;
   }
 </script>
-
 <script>
   const ctx = document.getElementById('historyChart');
 
@@ -123,5 +92,4 @@
     }
   });
 </script>
-
-</html>
+{{end}}

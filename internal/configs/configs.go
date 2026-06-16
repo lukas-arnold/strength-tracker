@@ -8,7 +8,7 @@ import (
 )
 
 const port = ":8080"
-const storageFile = "data/exercises.json"
+const storageFile = "data/strength-tracker.json"
 const language = "en"
 
 func GetPort() string {
