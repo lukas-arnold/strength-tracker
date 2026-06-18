@@ -34,62 +34,10 @@
   <input type="submit" value='{{T "addStrength"}}' />
 </form>
 <script>
-  function formatLoad(load) {
-    load = load.replace(".", ",");
-    load += " kg";
-    return load;
-  }
-  function formatDate(date) {
-    date = new Date(date);
-    const options = {year: "numeric", month: "2-digit", day: "2-digit"};
-    date = date.toLocaleDateString("default", options);
-    return date;
-  }
-</script>
-<script>
-  const ctx = document.getElementById('historyChart');
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
+  renderChart("historyChart", {
       labels: {{.Dates}},
-      datasets: [{
-        label: '{{T "load"}}',
-        data: {{.Loads}},
-        borderWidth: 1
-      }]
-    },
-    options: {
-      plugins: {
-        tooltip: {
-          callbacks: {
-            title: (tooltipItem, data) => {
-              return formatDate(tooltipItem[0].label)
-            },
-            label: (tooltipItem, data) => {
-                return formatLoad(tooltipItem.formattedValue);
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: false,
-          ticks: {
-            callback: function(value) {
-              return formatLoad(this.getLabelForValue(value));
-            }
-          }
-        },
-        x: {
-          ticks: {
-            callback: function(value) {
-              return formatDate(this.getLabelForValue(value));
-            }
-          }
-        },
-      }
-    }
+      label: '{{T "load"}}',
+      data: {{.Loads}}
   });
 </script>
 {{end}}

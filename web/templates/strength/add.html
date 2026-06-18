@@ -6,8 +6,8 @@
   <h2>{{.Name}} ({{.MuscleGroup}})</h2>
 </div>
 <form action="/strength/add/{{.Id}}" method="POST">
-  <div><input name="date" type="date" id="date"></div>
-  <div><input name="load" type="number" step="0.01" placeholder='{{T "load"}}'></div>
+  <div><input name="date" type="date"></div>
+  <div><input name="load" type="number" step="0.1" placeholder='{{T "load"}}'></div>
   <div><input type="submit" value='{{T "save"}}'></div>
 </form>
 {{end}}
