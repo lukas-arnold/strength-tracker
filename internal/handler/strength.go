@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/lukas-arnold/strength-tracker/internal/configs"
-	"github.com/lukas-arnold/strength-tracker/internal/language"
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 	"github.com/lukas-arnold/strength-tracker/internal/storage"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
@@ -18,11 +17,9 @@ func HandleAddStrengthGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tmpl := template.Must(
-		template.New("base.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/strength/add.html"),
+		template.New("base.html").
+			Funcs(getTemplateFuncs()).
+			ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/strength/add.html"),
 	)
 	exercise, err := storage.GetExercise(exerciseId)
 	if err != nil {
@@ -51,11 +48,9 @@ func HandleAddStrengthPost(w http.ResponseWriter, r *http.Request) {
 
 func HandleEditStrength(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
-		template.New("base.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/strength/edit.html"),
+		template.New("base.html").
+			Funcs(getTemplateFuncs()).
+			ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/strength/edit.html"),
 	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {

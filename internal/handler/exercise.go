@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/lukas-arnold/strength-tracker/internal/configs"
-	"github.com/lukas-arnold/strength-tracker/internal/language"
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 	"github.com/lukas-arnold/strength-tracker/internal/storage"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
@@ -13,11 +12,9 @@ import (
 
 func HandleAddExerciseGet(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
-		template.New("base.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/exercise/add.html"),
+		template.New("base.html").
+			Funcs(getTemplateFuncs()).
+			ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/exercise/add.html"),
 	)
 	err := tmpl.Execute(w, nil)
 	if err != nil {
@@ -37,11 +34,9 @@ func HandleAddExercisePost(w http.ResponseWriter, r *http.Request) {
 
 func HandleEditExercise(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
-		template.New("base.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/exercise/edit.html"),
+		template.New("base.html").
+			Funcs(getTemplateFuncs()).
+			ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/exercise/edit.html"),
 	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {
@@ -97,11 +92,9 @@ func HandleDeleteExercise(w http.ResponseWriter, r *http.Request) {
 
 func HandleHistory(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(
-		template.New("base.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/exercise/history.html"),
+		template.New("base.html").
+			Funcs(getTemplateFuncs()).
+			ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/exercise/history.html"),
 	)
 	id, err := utils.ConvertId(r.PathValue("id"))
 	if err != nil {
