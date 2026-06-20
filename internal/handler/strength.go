@@ -11,7 +11,7 @@ import (
 )
 
 func HandleAddStrengthGet(w http.ResponseWriter, r *http.Request) {
-	exerciseId, err := utils.ConvertId(r.PathValue("exerciseId"))
+	exerciseId, err := utils.ConvertToInt(r.PathValue("exerciseId"))
 	if err != nil {
 		handleError(w, err, 500)
 		return
@@ -30,7 +30,7 @@ func HandleAddStrengthGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAddStrengthPost(w http.ResponseWriter, r *http.Request) {
-	exerciseId, err := utils.ConvertId(r.PathValue("exerciseId"))
+	exerciseId, err := utils.ConvertToInt(r.PathValue("exerciseId"))
 	if err != nil {
 		handleError(w, err, 500)
 		return
@@ -42,7 +42,13 @@ func HandleAddStrengthPost(w http.ResponseWriter, r *http.Request) {
 		handleError(w, err, 500)
 		return
 	}
-	storage.AddStrength(exerciseId, models.StrengthInput{Date: date, Load: load})
+	repetitionsForm := r.FormValue("repetitions")
+	repetitions, err := utils.ConvertToInt(repetitionsForm)
+	if err != nil {
+		handleError(w, err, 500)
+		return
+	}
+	storage.AddStrength(exerciseId, models.StrengthInput{Date: date, Load: load, Repetitions: repetitions})
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
@@ -52,7 +58,7 @@ func HandleEditStrength(w http.ResponseWriter, r *http.Request) {
 			Funcs(getTemplateFuncs()).
 			ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/strength/edit.html"),
 	)
-	id, err := utils.ConvertId(r.PathValue("id"))
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
 		handleError(w, err, 500)
 		return
@@ -70,7 +76,7 @@ func HandleEditStrength(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleSaveStrength(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.ConvertId(r.PathValue("id"))
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
 		handleError(w, err, 500)
 		return
@@ -86,8 +92,15 @@ func HandleSaveStrength(w http.ResponseWriter, r *http.Request) {
 		handleError(w, err, 500)
 		return
 	}
+	repetitionsForm := r.FormValue("repetitions")
+	repetitions, err := utils.ConvertToInt(repetitionsForm)
+	if err != nil {
+		handleError(w, err, 500)
+		return
+	}
 	strength.Date = r.FormValue("date")
 	strength.Load = load
+	strength.Repetitions = repetitions
 	err = storage.UpdateStrength(strength)
 	if err != nil {
 		handleError(w, err, 500)
@@ -97,7 +110,7 @@ func HandleSaveStrength(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteStrength(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.ConvertId(r.PathValue("id"))
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
 		handleError(w, err, 500)
 		return

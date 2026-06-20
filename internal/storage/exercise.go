@@ -81,11 +81,13 @@ func GetExerciseForHistoryChart(id int64) (models.ExerciseForHistoryChart, error
 	}
 	var dates []string
 	var loads []float64
+	var repetitions []int64
 	for _, value := range exercise.StrengthHistory {
 		dates = append(dates, value.Date)
 		loads = append(loads, value.Load)
+		repetitions = append(repetitions, value.Repetitions)
 	}
-	exerciseForHistoryChart := models.ExerciseForHistoryChart{Exercise: models.Exercise{Id: exercise.Id, ExerciseInput: models.ExerciseInput{Name: exercise.Name, MuscleGroup: exercise.MuscleGroup}, StrengthHistory: exercise.StrengthHistory}, Dates: dates, Loads: loads}
+	exerciseForHistoryChart := models.ExerciseForHistoryChart{Exercise: models.Exercise{Id: exercise.Id, ExerciseInput: models.ExerciseInput{Name: exercise.Name, MuscleGroup: exercise.MuscleGroup, Machine: exercise.Machine}, StrengthHistory: exercise.StrengthHistory}, Dates: dates, Loads: loads, Repetitions: repetitions}
 	return exerciseForHistoryChart, nil
 }
 
@@ -98,6 +100,7 @@ func UpdateExercise(exercise models.Exercise) error {
 		if exercises[i].Id == exercise.Id {
 			exercises[i].Name = exercise.Name
 			exercises[i].MuscleGroup = exercise.MuscleGroup
+			exercises[i].Machine = exercise.Machine
 			exercises[i].StrengthHistory = exercise.StrengthHistory
 		}
 	}
@@ -134,6 +137,9 @@ func sortExercises(exercises []models.Exercise) []models.Exercise {
 		}
 		if exercises[i].Name != exercises[j].Name {
 			return exercises[i].Name < exercises[j].Name
+		}
+		if exercises[i].Machine != exercises[j].Machine {
+			return exercises[i].Machine < exercises[j].Machine
 		}
 		return false
 	})

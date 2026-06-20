@@ -1,11 +1,10 @@
 package handler
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"strings"
+	"strconv"
 
 	"github.com/lukas-arnold/strength-tracker/internal/configs"
 	"github.com/lukas-arnold/strength-tracker/internal/language"
@@ -22,9 +21,11 @@ func getTemplateFuncs() template.FuncMap {
 		"T": func(key string) string {
 			return language.T(configs.GetLanguage(), key)
 		},
-		"formatFloat": func(value float64, decimals int) string {
-			format := fmt.Sprintf("%%.%df", decimals)
-			return strings.ReplaceAll(fmt.Sprintf(format, value), ".", ",")
+		"formatLoad": func(value float64) string {
+			return strconv.FormatFloat(value, 'f', -1, 64)
+		},
+		"formatRepetitions": func(value int64) string {
+			return strconv.FormatInt(value, 10)
 		},
 	}
 }

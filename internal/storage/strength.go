@@ -70,6 +70,7 @@ func UpdateStrength(strength models.Strength) error {
 			if exercises[i].StrengthHistory[j].Id == strength.Id {
 				exercises[i].StrengthHistory[j].Date = strength.Date
 				exercises[i].StrengthHistory[j].Load = strength.Load
+				exercises[i].StrengthHistory[j].Repetitions = strength.Repetitions
 			}
 		}
 	}

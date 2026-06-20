@@ -1,43 +1,57 @@
 {{define "template"}}
 <div class="center">
-  <h1>{{T "strengthHistory"}}</h1>
+	<h1>{{T "strengthHistory"}}</h1>
 </div>
 <div class="center">
-  <h2>{{.Name}} ({{.MuscleGroup}})</h2>
+	<h2>
+        <i class="fa-solid fa-dumbbell"></i> {{.Name}} 
+        <i class="fa-solid fa-bone"></i> {{.MuscleGroup}} 
+        {{if .Machine}}
+		    <i class="fa-solid fa-gear"></i> {{.Machine}}
+		{{ end }}
+	</h2>
 </div>
 <div>
-  <canvas id="historyChart"></canvas>
+	<canvas id="historyChart"></canvas>
 </div>
 <table>
-    <tr>
-        <th>{{T "date"}}</th>
-        <th>{{T "load"}}</th>
-    </tr>
-    <tr>
-        {{range .StrengthHistory}}
-            <tr>
-                <td class="date">{{.Date}}</td>
-                <td class="load">{{.Load}}</td>
-                <td>
-                    <form action="/strength/edit/{{.Id}}">
-                        <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
-                    </form>
-                    <form action="/strength/delete/{{.Id}}">
-                        <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
-                    </form>
-                </td>
-            </tr>
-        {{end}}
-    </tr>
+	<tr>
+		<th>{{T "date"}}</th>
+		<th>{{T "load"}}</th>
+		<th>{{T "repetitions"}}</th>
+        <th>{{T "action"}}</th>
+	</tr>
+	<tr>
+		{{range .StrengthHistory}}
+	<tr>
+		<td class="date">{{.Date}}</td>
+		<td>{{formatLoad .Load}} kg</td>
+		<td>{{formatRepetitions .Repetitions}}</td>
+		<td>
+            <div class="grid">
+                <form action="/strength/edit/{{.Id}}">
+                    <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
+                </form>
+                <form action="/strength/delete/{{.Id}}">
+                    <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
+                </form>
+            </div>
+		</td>
+	</tr>
+	{{end}}
+	</tr>
 </table>
 <form action="/strength/add/{{.Id}}">
-  <input type="submit" value='{{T "addStrength"}}' />
+	<input type="submit" value='{{T "addStrength"}}' />
 </form>
 <script>
-  renderChart("historyChart", {
-      labels: {{.Dates}},
-      label: '{{T "load"}}',
-      data: {{.Loads}}
-  });
+	renderChart("historyChart", {
+	    labels: {{.Dates}},
+	    loadLabel: '{{T "load"}}',
+	    loadData: {{.Loads}},
+	    loadFormatter: formatLoad,
+	    repetitionsLabel: '{{T "repetitions"}}',
+	    repetitionsData: {{.Repetitions}},
+	});
 </script>
 {{end}}

@@ -24,12 +24,12 @@ func ConvertBytesToExercises(bytes []byte) ([]models.Exercise, error) {
 	return exercises, nil
 }
 
-func ConvertId(idStr string) (int64, error) {
-	id, err := strconv.ParseInt(idStr, 10, 64)
+func ConvertToInt(intStr string) (int64, error) {
+	intConv, err := strconv.ParseInt(intStr, 10, 64)
 	if err != nil {
 		return -1, err
 	}
-	return id, nil
+	return intConv, nil
 }
 
 func ConvertLoad(loadStr string) (float64, error) {

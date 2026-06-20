@@ -3,6 +3,7 @@ package models
 type ExerciseInput struct {
 	Name        string `json:"Name"`
 	MuscleGroup string `json:"MuscleGroup"`
+	Machine     string `json:"Machine"`
 }
 
 type Exercise struct {
@@ -18,6 +19,7 @@ type ExerciseWithLastStrength struct {
 
 type ExerciseForHistoryChart struct {
 	Exercise
-	Dates []string
-	Loads []float64
+	Dates       []string
+	Loads       []float64
+	Repetitions []int64
 }

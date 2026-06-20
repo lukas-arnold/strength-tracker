@@ -3,8 +3,9 @@
   <h1>{{T "addExercise"}}</h1>
 </div>
 <form action="/exercise/add" method="POST">
-  <div><input name="name" placeholder='{{T "name"}}'></div>
-  <div><input name="muscleGroup" placeholder='{{T "muscleGroup"}}'></div>
+  <div><input name="name" placeholder='{{T "name"}}' required></div>
+  <div><input name="muscleGroup" placeholder='{{T "muscleGroup"}}' required></div>
+  <div><input name="machine" placeholder='{{T "machine"}}'></div>
   <div><input type="submit" value='{{T "save"}}'></div>
 </form>
 {{end}}

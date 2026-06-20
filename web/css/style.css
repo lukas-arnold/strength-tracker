@@ -9,6 +9,10 @@ table {
   table-layout: fixed;
 }
 
+table button {
+  margin-bottom: 0 !important;
+}
+
 th, td {
   text-align: center; 
   vertical-align: middle;

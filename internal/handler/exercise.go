@@ -24,7 +24,7 @@ func HandleAddExerciseGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAddExercisePost(w http.ResponseWriter, r *http.Request) {
-	err := storage.AddExercise(models.ExerciseInput{Name: r.FormValue("name"), MuscleGroup: r.FormValue("muscleGroup")})
+	err := storage.AddExercise(models.ExerciseInput{Name: r.FormValue("name"), MuscleGroup: r.FormValue("muscleGroup"), Machine: r.FormValue("machine")})
 	if err != nil {
 		handleError(w, err, 500)
 		return
@@ -38,7 +38,7 @@ func HandleEditExercise(w http.ResponseWriter, r *http.Request) {
 			Funcs(getTemplateFuncs()).
 			ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/exercise/edit.html"),
 	)
-	id, err := utils.ConvertId(r.PathValue("id"))
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
 		handleError(w, err, 500)
 		return
@@ -56,7 +56,7 @@ func HandleEditExercise(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleSaveExercise(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.ConvertId(r.PathValue("id"))
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
 		handleError(w, err, 500)
 		return
@@ -68,6 +68,7 @@ func HandleSaveExercise(w http.ResponseWriter, r *http.Request) {
 	}
 	exercise.Name = r.FormValue("name")
 	exercise.MuscleGroup = r.FormValue("muscleGroup")
+	exercise.Machine = r.FormValue("machine")
 	err = storage.UpdateExercise(exercise)
 	if err != nil {
 		handleError(w, err, 500)
@@ -77,7 +78,7 @@ func HandleSaveExercise(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteExercise(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.ConvertId(r.PathValue("id"))
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
 		handleError(w, err, 500)
 		return
@@ -96,7 +97,7 @@ func HandleHistory(w http.ResponseWriter, r *http.Request) {
 			Funcs(getTemplateFuncs()).
 			ParseFS(configs.GetWebFiles(), "templates/base.html", "templates/exercise/history.html"),
 	)
-	id, err := utils.ConvertId(r.PathValue("id"))
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
 		handleError(w, err, 500)
 		return

@@ -1,44 +1,66 @@
 {{define "template"}}
-<div class="table-cards">
-  <table>
-    <thead>
-      <tr>
-        <th>{{T "exercise"}}</th>
-        <th>{{T "strength"}}</th>
-        <th>{{T "action"}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{range .}}
-      <tr>
-        <td>
+<table>
+  <thead>
+    <tr>
+      <th>{{T "exercise"}}</th>
+      <th>{{T "strength"}}</th>
+      <th>{{T "action"}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .}}
+    <tr>
+      <td>
+        <div>
+          <div><i class="fa-solid fa-dumbbell"></i></div>
           <div>{{.Name}}</div>
-          <div>({{.MuscleGroup}})</div>
-        <td>
-          <div class="load">{{.LastStrength.Load}}</div>
+        </div>
+        <div>
+          <div><i class="fa-solid fa-bone"></i></div>
+          <div>{{.MuscleGroup}}</div>
+        </div>
+        {{if .Machine}}
+          <div>
+            <div><i class="fa-solid fa-gear"></i></div>
+            <div>{{.Machine}}</div>
+          </div>
+        {{end}}
+      </td>
+      <td>
+        <div>
+          <div>
+            {{if ne .LastStrength.Load 0.0}}
+              {{formatLoad .LastStrength.Load}} kg 
+            {{end}}
+            {{if ne .LastStrength.Repetitions 0}}
+              x {{formatRepetitions .LastStrength.Repetitions}}
+            {{end}}
+          </div>
           <div class="date">{{.LastStrength.Date}}</div>
-          <form action="/exercise/history/{{.Id}}">
-            <button type="submit" class="secondary"><i class="fa-solid fa-clock-rotate-left"></i></button>
-          </form>
-        </td>
-        <td>
-          <article>
+          <div class="grid">
             <form action="/strength/add/{{.Id}}">
               <button type="submit"><i class="fa-solid fa-plus"></i></button>
             </form>
-            <form action="/exercise/edit/{{.Id}}">
-              <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
+            <form action="/exercise/history/{{.Id}}">
+              <button type="submit" class="secondary"><i class="fa-solid fa-clock-rotate-left"></i></button>
             </form>
-            <form action="/exercise/delete/{{.Id}}">
-              <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
-            </form>
-          </article>
-        </td>
-      </tr>
-      {{end}}
-    </tbody>
-  </table>
-</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="grid">
+          <form action="/exercise/edit/{{.Id}}">
+            <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
+          </form>
+          <form action="/exercise/delete/{{.Id}}">
+            <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
 <form action="/exercise/add">
   <input type="submit" value='{{T "addExercise"}}'/>
 </form>

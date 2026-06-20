@@ -2,12 +2,10 @@
 <div class="center">
   <h1>{{T "editExercise"}}</h1>
 </div>
-<div class="center">
-  <h2>{{.Name}} ({{.MuscleGroup}})</h2>
-</div>
 <form action="/exercise/save/{{.Id}}" method="POST">
-  <div><input name="muscleGroup" value="{{.MuscleGroup}}"></div>
-  <div><input name="name" value="{{.Name}}"></div>
+  <div><input name="name" value="{{.Name}}" placeholder='{{T "name"}}' required></div>
+  <div><input name="muscleGroup" value="{{.MuscleGroup}}" placeholder='{{T "muscleGroup"}}' required></div>
+  <div><input name="machine" value="{{.Machine}}" placeholder='{{T "machine"}}'></div>
   <div><input type="submit" value='{{T "save"}}'></div>
 </form>
 {{end}}
