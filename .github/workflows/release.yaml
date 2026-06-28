@@ -35,7 +35,7 @@ jobs:
 
 
       - name: Build application
-        run: go build ./cmd
+        run: go build ./...
 
 
 
