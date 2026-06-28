@@ -7,34 +7,38 @@ import (
 	"github.com/lukas-arnold/strength-tracker/internal/configs"
 	"github.com/lukas-arnold/strength-tracker/internal/handler"
 	"github.com/lukas-arnold/strength-tracker/internal/language"
+	"github.com/lukas-arnold/strength-tracker/internal/storage"
 )
 
 func main() {
+
 	err := language.LoadLanguages()
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mux := http.NewServeMux()
+	store := storage.New(
+		configs.GetStorageFile(),
+	)
 
-	mux.HandleFunc("GET /service-worker", handler.HandleServiceWorker)
-	mux.HandleFunc("GET /web/", handler.HandleFiles)
+	h := handler.New(
+		store,
+	)
 
-	mux.HandleFunc("GET /", handler.HandleView)
+	server := createServer(
+		h,
+	)
 
-	mux.HandleFunc("GET /exercise/add", handler.HandleAddExerciseGet)
-	mux.HandleFunc("POST /exercise/add", handler.HandleAddExercisePost)
-	mux.HandleFunc("GET /exercise/edit/{id}", handler.HandleEditExercise)
-	mux.HandleFunc("POST /exercise/save/{id}", handler.HandleSaveExercise)
-	mux.HandleFunc("GET /exercise/delete/{id}", handler.HandleDeleteExercise)
-	mux.HandleFunc("GET /exercise/history/{id}", handler.HandleHistory)
+	log.Printf(
+		"Strength Tracker running on %s",
+		configs.GetPort(),
+	)
 
-	mux.HandleFunc("GET /strength/add/{exerciseId}", handler.HandleAddStrengthGet)
-	mux.HandleFunc("POST /strength/add/{exerciseId}", handler.HandleAddStrengthPost)
-	mux.HandleFunc("GET /strength/edit/{id}", handler.HandleEditStrength)
-	mux.HandleFunc("POST /strength/save/{id}", handler.HandleSaveStrength)
-	mux.HandleFunc("GET /strength/delete/{id}", handler.HandleDeleteStrength)
-
-	log.Printf("Strength Tracker running on %s", configs.GetPort())
-	log.Fatal(http.ListenAndServe(configs.GetPort(), mux))
+	log.Fatal(
+		http.ListenAndServe(
+			configs.GetPort(),
+			server,
+		),
+	)
 }

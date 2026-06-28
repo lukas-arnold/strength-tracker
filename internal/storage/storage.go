@@ -4,45 +4,62 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/lukas-arnold/strength-tracker/internal/configs"
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
 )
 
-func saveStorage(exercises []models.Exercise) error {
+type Storage struct {
+	file string
+}
+
+func New(file string) *Storage {
+	return &Storage{
+		file: file,
+	}
+}
+
+func (s *Storage) saveStorage(exercises []models.Exercise) error {
 	exercises = sortStorage(exercises)
+
 	bytes, err := utils.ConvertExercisesToBytes(exercises)
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(configs.GetStorageFile(), []byte(bytes), 0666)
-	if err != nil {
-		return err
-	}
-	return nil
+
+	return os.WriteFile(s.file, bytes, 0666)
 }
 
-func readStorage() ([]byte, error) {
-	checkStorage()
-	bytes, err := os.ReadFile(configs.GetStorageFile())
+func (s *Storage) readStorage() ([]byte, error) {
+	err := s.checkStorage()
 	if err != nil {
 		return nil, err
 	}
-	return bytes, nil
+
+	return os.ReadFile(s.file)
 }
 
-func checkStorage() {
-	_, err := os.ReadFile(configs.GetStorageFile())
-	if err != nil {
-		os.MkdirAll(filepath.Dir(configs.GetStorageFile()), 0755)
-		saveStorage([]models.Exercise{})
+func (s *Storage) checkStorage() error {
+	_, err := os.ReadFile(s.file)
+
+	if err == nil {
+		return nil
 	}
+
+	err = os.MkdirAll(filepath.Dir(s.file), 0755)
+	if err != nil {
+		return err
+	}
+
+	return s.saveStorage([]models.Exercise{})
 }
 
 func sortStorage(exercises []models.Exercise) []models.Exercise {
 	exercises = sortExercises(exercises)
+
 	for i := range exercises {
-		exercises[i].StrengthHistory = sortStrengths(exercises[i].StrengthHistory)
+		exercises[i].StrengthHistory =
+			sortStrengths(exercises[i].StrengthHistory)
 	}
+
 	return exercises
 }

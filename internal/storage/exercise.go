@@ -8,140 +8,157 @@ import (
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
 )
 
-func AddExercise(exercise models.ExerciseInput) error {
-	exercises, err := GetExercises()
+func (s *Storage) AddExercise(input models.ExerciseInput) error {
+	exercises, err := s.GetExercises()
 	if err != nil {
 		return err
 	}
-	newExercise := models.Exercise{Id: utils.Id(), ExerciseInput: exercise, StrengthHistory: []models.Strength{}}
-	exercises = append(exercises, newExercise)
-	err = saveStorage(exercises)
-	if err != nil {
-		return err
+
+	exercise := models.Exercise{
+		Id:              utils.Id(),
+		ExerciseInput:   input,
+		StrengthHistory: []models.Strength{},
 	}
-	return nil
+
+	exercises = append(exercises, exercise)
+
+	return s.saveStorage(exercises)
 }
 
-func GetExercises() ([]models.Exercise, error) {
-	bytes, err := readStorage()
+func (s *Storage) GetExercises() ([]models.Exercise, error) {
+	bytes, err := s.readStorage()
 	if err != nil {
 		return nil, err
 	}
-	exercises, err := utils.ConvertBytesToExercises(bytes)
-	if err != nil {
-		return nil, err
-	}
-	return exercises, nil
+
+	return utils.ConvertBytesToExercises(bytes)
 }
 
-func GetExercisesWithLastStrength() ([]models.ExerciseWithLastStrength, error) {
-	bytes, err := readStorage()
+func (s *Storage) GetExercisesWithLastStrength() ([]models.ExerciseWithLastStrength, error) {
+	exercises, err := s.GetExercises()
 	if err != nil {
 		return nil, err
 	}
-	exercises, err := utils.ConvertBytesToExercises(bytes)
-	if err != nil {
-		return nil, err
-	}
-	var exercisesWithLastStrength []models.ExerciseWithLastStrength
+
+	result := make([]models.ExerciseWithLastStrength, 0)
+
 	for _, exercise := range exercises {
-		lastStrength, err := GetLastStrength(exercise.Id)
+		last, err := s.GetLastStrength(exercise.Id)
+
 		if err != nil {
 			return nil, err
 		}
-		exercisesWithLastStrength = append(exercisesWithLastStrength, models.ExerciseWithLastStrength{Exercise: exercise, LastStrength: lastStrength})
+
+		result = append(
+			result,
+			models.ExerciseWithLastStrength{
+				Exercise:     exercise,
+				LastStrength: last,
+			},
+		)
 	}
-	for i := range exercisesWithLastStrength {
-		if exercisesWithLastStrength[i].LastStrength.Load == 0 {
-			exercisesWithLastStrength[i].LastStrength.Load = -1
-			exercisesWithLastStrength[i].LastStrength.Date = "1970-01-01"
+
+	for i := range result {
+		if result[i].LastStrength.Load == 0 {
+			result[i].LastStrength.Load = -1
+			result[i].LastStrength.Date = "1970-01-01"
 		}
 	}
-	return exercisesWithLastStrength, nil
+
+	return result, nil
 }
 
-func GetExercise(id int64) (models.Exercise, error) {
-	exercises, err := GetExercises()
+func (s *Storage) GetExercise(id int64) (models.Exercise, error) {
+	exercises, err := s.GetExercises()
+
 	if err != nil {
 		return models.Exercise{}, err
 	}
-	var exercise models.Exercise
-	for _, value := range exercises {
-		if value.Id == id {
-			exercise = value
+
+	for _, exercise := range exercises {
+		if exercise.Id == id {
+			return exercise, nil
 		}
 	}
-	return exercise, nil
+
+	return models.Exercise{}, nil
 }
 
-func GetExerciseForHistoryChart(id int64) (models.ExerciseForHistoryChart, error) {
-	exercise, err := GetExercise(id)
+func (s *Storage) GetExerciseForHistoryChart(id int64) (models.ExerciseForHistoryChart, error) {
+	exercise, err := s.GetExercise(id)
+
 	if err != nil {
 		return models.ExerciseForHistoryChart{}, err
 	}
-	var dates []string
-	var loads []float64
-	var repetitions []int64
-	for _, value := range exercise.StrengthHistory {
-		dates = append(dates, value.Date)
-		loads = append(loads, value.Load)
-		repetitions = append(repetitions, value.Repetitions)
+
+	dates := []string{}
+	loads := []float64{}
+	repetitions := []int64{}
+
+	// reverse StrengthHistory
+	for i := len(exercise.StrengthHistory) - 1; i >= 0; i-- {
+		strength := exercise.StrengthHistory[i]
+
+		dates = append(dates, strength.Date)
+		loads = append(loads, strength.Load)
+		repetitions = append(repetitions, strength.Repetitions)
 	}
-	exerciseForHistoryChart := models.ExerciseForHistoryChart{Exercise: models.Exercise{Id: exercise.Id, ExerciseInput: models.ExerciseInput{Name: exercise.Name, MuscleGroup: exercise.MuscleGroup, Machine: exercise.Machine}, StrengthHistory: exercise.StrengthHistory}, Dates: dates, Loads: loads, Repetitions: repetitions}
-	return exerciseForHistoryChart, nil
+
+	return models.ExerciseForHistoryChart{
+		Exercise:    exercise,
+		Dates:       dates,
+		Loads:       loads,
+		Repetitions: repetitions,
+	}, nil
 }
 
-func UpdateExercise(exercise models.Exercise) error {
-	exercises, err := GetExercises()
+func (s *Storage) UpdateExercise(exercise models.Exercise) error {
+	exercises, err := s.GetExercises()
+
 	if err != nil {
 		return err
 	}
+
 	for i := range exercises {
 		if exercises[i].Id == exercise.Id {
-			exercises[i].Name = exercise.Name
-			exercises[i].MuscleGroup = exercise.MuscleGroup
-			exercises[i].Machine = exercise.Machine
-			exercises[i].StrengthHistory = exercise.StrengthHistory
+			exercises[i] = exercise
+			break
 		}
 	}
-	err = saveStorage(exercises)
-	if err != nil {
-		return err
-	}
-	return nil
+
+	return s.saveStorage(exercises)
 }
 
-func DeleteExercise(id int64) error {
-	exercises, err := GetExercises()
+func (s *Storage) DeleteExercise(id int64) error {
+	exercises, err := s.GetExercises()
+
 	if err != nil {
 		return err
 	}
-	var index int
+
 	for i := range exercises {
 		if exercises[i].Id == id {
-			index = i
+			exercises = slices.Delete(exercises, i, i+1)
+			return s.saveStorage(exercises)
 		}
 	}
-	exercises = slices.Delete(exercises, index, index+1)
-	err = saveStorage(exercises)
-	if err != nil {
-		return err
-	}
+
 	return nil
 }
 
 func sortExercises(exercises []models.Exercise) []models.Exercise {
 	sort.Slice(exercises, func(i, j int) bool {
+
 		if exercises[i].MuscleGroup != exercises[j].MuscleGroup {
 			return exercises[i].MuscleGroup < exercises[j].MuscleGroup
 		}
+
 		if exercises[i].Name != exercises[j].Name {
 			return exercises[i].Name < exercises[j].Name
 		}
-		if exercises[i].Machine != exercises[j].Machine {
-			return exercises[i].Machine < exercises[j].Machine
-		}
-		return false
+
+		return exercises[i].Machine < exercises[j].Machine
 	})
+
 	return exercises
 }
