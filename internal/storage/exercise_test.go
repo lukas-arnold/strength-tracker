@@ -1,267 +1,133 @@
 package storage
 
 import (
-	"path/filepath"
 	"testing"
 
 	"github.com/lukas-arnold/strength-tracker/internal/models"
 )
 
 func TestAddExercise(t *testing.T) {
+	store := testStorage(t)
 
-	store := New(
-		filepath.Join(
-			t.TempDir(),
-			"storage.json",
-		),
-	)
-
-	err := store.AddExercise(
-		models.ExerciseInput{
-			Name: "Bench",
-		},
-	)
-
+	err := store.AddExercise(models.ExerciseInput{Name: "Bench"})
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("could not add exercise: %v", err)
 	}
 
 	exercises, _ := store.GetExercises()
-
 	if len(exercises) != 1 {
-		t.Fatal("exercise not added")
+		t.Errorf("expected 1 exercise, got %d", len(exercises))
 	}
 }
 
 func TestGetExercise(t *testing.T) {
-
-	store := New(
-		filepath.Join(
-			t.TempDir(),
-			"storage.json",
-		),
-	)
-
-	store.AddExercise(
-		models.ExerciseInput{
-			Name: "Bench",
-		},
-	)
+	store := testStorage(t)
+	store.AddExercise(models.ExerciseInput{Name: "Bench"})
 
 	exercises, _ := store.GetExercises()
-
-	exercise, err := store.GetExercise(
-		exercises[0].Id,
-	)
-
+	exercise, err := store.GetExercise(exercises[0].Id)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("error getting exercise: %v", err)
 	}
 
 	if exercise.Name != "Bench" {
-		t.Fatalf(
-			"got %s",
-			exercise.Name,
-		)
+		t.Errorf("expected Bench, got %s", exercise.Name)
 	}
 }
 
 func TestGetExerciseNotFound(t *testing.T) {
-
-	store := New(
-		filepath.Join(
-			t.TempDir(),
-			"storage.json",
-		),
-	)
+	store := testStorage(t)
 
 	exercise, err := store.GetExercise(999)
-
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("unexpected error: %v", err)
 	}
 
 	if exercise.Id != 0 {
-		t.Fatal("expected empty exercise")
+		t.Errorf("expected empty exercise, got id %d", exercise.Id)
 	}
 }
 
 func TestGetExercisesWithLastStrength(t *testing.T) {
-
-	store := New(
-		filepath.Join(
-			t.TempDir(),
-			"storage.json",
-		),
-	)
-
-	store.AddExercise(
-		models.ExerciseInput{
-			Name: "Bench",
-		},
-	)
-
-	exercises, _ := store.GetExercises()
+	store := testStorage(t)
+	store.AddExercise(models.ExerciseInput{Name: "Bench"})
 
 	result, err := store.GetExercisesWithLastStrength()
-
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("error getting exercises: %v", err)
 	}
 
 	if len(result) != 1 {
-		t.Fatal("missing exercise")
+		t.Fatalf("expected 1 result, got %d", len(result))
 	}
 
 	if result[0].LastStrength.Load != -1 {
-		t.Fatalf(
-			"got %f",
-			result[0].LastStrength.Load,
-		)
+		t.Errorf("expected default load -1, got %f", result[0].LastStrength.Load)
 	}
-
-	_ = exercises
 }
 
 func TestGetExerciseForHistoryChart(t *testing.T) {
-
-	store := New(
-		filepath.Join(
-			t.TempDir(),
-			"storage.json",
-		),
-	)
-
-	store.AddExercise(
-		models.ExerciseInput{
-			Name: "Bench",
-		},
-	)
+	store := testStorage(t)
+	store.AddExercise(models.ExerciseInput{Name: "Bench"})
 
 	exercises, _ := store.GetExercises()
+	store.AddStrength(exercises[0].Id, models.StrengthInput{
+		Date:        "2024-01-01",
+		Load:        100,
+		Repetitions: 5,
+	})
 
-	store.AddStrength(
-		exercises[0].Id,
-		models.StrengthInput{
-			Date:        "2024-01-01",
-			Load:        100,
-			Repetitions: 5,
-		},
-	)
-
-	result, err := store.GetExerciseForHistoryChart(
-		exercises[0].Id,
-	)
-
+	result, err := store.GetExerciseForHistoryChart(exercises[0].Id)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("error getting chart data: %v", err)
 	}
 
-	if len(result.Dates) != 1 {
-		t.Fatal("chart data missing")
-	}
-
-	if result.Loads[0] != 100 {
-		t.Fatalf(
-			"got %f",
-			result.Loads[0],
-		)
+	if len(result.Dates) != 1 || result.Loads[0] != 100 {
+		t.Errorf("chart data missing or incorrect; got loads: %v", result.Loads)
 	}
 }
 
 func TestUpdateExercise(t *testing.T) {
-
-	store := New(
-		filepath.Join(
-			t.TempDir(),
-			"storage.json",
-		),
-	)
-
-	store.AddExercise(
-		models.ExerciseInput{
-			Name: "Bench",
-		},
-	)
+	store := testStorage(t)
+	store.AddExercise(models.ExerciseInput{Name: "Bench"})
 
 	exercises, _ := store.GetExercises()
-
 	exercise := exercises[0]
-
 	exercise.Name = "Squat"
 
-	err := store.UpdateExercise(exercise)
-
-	if err != nil {
-		t.Fatal(err)
+	if err := store.UpdateExercise(exercise); err != nil {
+		t.Fatalf("error updating exercise: %v", err)
 	}
 
-	updated, _ := store.GetExercise(
-		exercise.Id,
-	)
-
+	updated, _ := store.GetExercise(exercise.Id)
 	if updated.Name != "Squat" {
-		t.Fatalf(
-			"got %s",
-			updated.Name,
-		)
+		t.Errorf("expected Squat, got %s", updated.Name)
 	}
 }
 
 func TestDeleteExercise(t *testing.T) {
-
-	store := New(
-		filepath.Join(
-			t.TempDir(),
-			"storage.json",
-		),
-	)
-
-	store.AddExercise(
-		models.ExerciseInput{
-			Name: "Bench",
-		},
-	)
+	store := testStorage(t)
+	store.AddExercise(models.ExerciseInput{Name: "Bench"})
 
 	exercises, _ := store.GetExercises()
-
-	err := store.DeleteExercise(
-		exercises[0].Id,
-	)
-
-	if err != nil {
-		t.Fatal(err)
+	if err := store.DeleteExercise(exercises[0].Id); err != nil {
+		t.Fatalf("error deleting exercise: %v", err)
 	}
 
 	remaining, _ := store.GetExercises()
-
 	if len(remaining) != 0 {
-		t.Fatal("exercise not deleted")
+		t.Errorf("expected 0 exercises, got %d", len(remaining))
 	}
 }
 
 func TestSortExercises(t *testing.T) {
-
 	exercises := []models.Exercise{
-		{
-			ExerciseInput: models.ExerciseInput{
-				Name:        "Squat",
-				MuscleGroup: "Legs",
-				Machine:     "Barbell",
-			},
-		},
-		{
-			ExerciseInput: models.ExerciseInput{
-				Name:        "Bench",
-				MuscleGroup: "Chest",
-				Machine:     "Barbell",
-			},
-		},
+		{ExerciseInput: models.ExerciseInput{Name: "Squat", MuscleGroup: "Legs", Machine: "Barbell"}},
+		{ExerciseInput: models.ExerciseInput{Name: "Bench", MuscleGroup: "Chest", Machine: "Barbell"}},
 	}
 
 	sorted := sortExercises(exercises)
-
 	if sorted[0].Name != "Bench" {
-		t.Fatal("not sorted")
+		t.Errorf("expected Bench first, got %s", sorted[0].Name)
 	}
 }

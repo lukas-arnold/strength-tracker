@@ -1,12 +1,12 @@
 package models
 
 type StrengthInput struct {
-	Date        string  `json:"Date"`
-	Load        float64 `json:"Load"`
-	Repetitions int64   `json:"Repetitions"`
+	Date        string  `json:"date"`
+	Load        float64 `json:"load"`
+	Repetitions int64   `json:"repetitions"`
 }
 
 type Strength struct {
-	Id int64 `json:"Id"`
+	Id int64 `json:"id"`
 	StrengthInput
 }

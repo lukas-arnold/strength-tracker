@@ -3,117 +3,48 @@ package handler
 import (
 	"net/http"
 	"net/http/httptest"
-	"path/filepath"
 	"testing"
-
-	"github.com/lukas-arnold/strength-tracker/internal/storage"
 )
 
 func TestRoutes(t *testing.T) {
-
-	store := storage.New(
-		filepath.Join(
-			t.TempDir(),
-			"test.json",
-		),
-	)
-
-	h := New(store)
-
+	h := testHandler(t)
 	mux := http.NewServeMux()
-
-	RegisterRoutes(
-		mux,
-		h,
-	)
+	RegisterRoutes(mux, h)
 
 	tests := []struct {
+		name   string
 		method string
 		path   string
 	}{
-		{
-			method: "GET",
-			path:   "/",
-		},
+		{"Home", http.MethodGet, "/"},
 
-		{
-			method: "GET",
-			path:   "/web",
-		},
+		{"StaticWeb", http.MethodGet, "/web/"},
+		{"ServiceWorker", http.MethodGet, "/service-worker.js"},
 
-		{
-			method: "GET",
-			path:   "/service-worker.js",
-		},
+		{"ExerciseAddGet", http.MethodGet, "/exercise/add"},
+		{"ExerciseAddPost", http.MethodPost, "/exercise/add"},
+		{"ExerciseEdit", http.MethodGet, "/exercise/edit/1"},
+		{"ExerciseSave", http.MethodPost, "/exercise/save/1"},
+		{"ExerciseDelete", http.MethodGet, "/exercise/delete/1"},
+		{"ExerciseHistory", http.MethodGet, "/exercise/history/1"},
 
-		{
-			method: "GET",
-			path:   "/exercise/add",
-		},
-		{
-			method: "POST",
-			path:   "/exercise/add",
-		},
-		{
-			method: "GET",
-			path:   "/exercise/edit/1",
-		},
-		{
-			method: "POST",
-			path:   "/exercise/save/1",
-		},
-		{
-			method: "GET",
-			path:   "/exercise/delete/1",
-		},
-		{
-			method: "GET",
-			path:   "/exercise/history/1",
-		},
-
-		{
-			method: "GET",
-			path:   "/strength/add/1",
-		},
-		{
-			method: "POST",
-			path:   "/strength/add/1",
-		},
-		{
-			method: "GET",
-			path:   "/strength/edit/1",
-		},
-		{
-			method: "POST",
-			path:   "/strength/save/1",
-		},
-		{
-			method: "GET",
-			path:   "/strength/delete/1",
-		},
+		{"StrengthAddGet", http.MethodGet, "/strength/add/1"},
+		{"StrengthAddPost", http.MethodPost, "/strength/add/1"},
+		{"StrengthEdit", http.MethodGet, "/strength/edit/1"},
+		{"StrengthSave", http.MethodPost, "/strength/save/1"},
+		{"StrengthDelete", http.MethodGet, "/strength/delete/1"},
 	}
 
-	for _, test := range tests {
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(tt.method, tt.path, nil)
+			rec := httptest.NewRecorder()
 
-		req := httptest.NewRequest(
-			test.method,
-			test.path,
-			nil,
-		)
+			mux.ServeHTTP(rec, req)
 
-		rec := httptest.NewRecorder()
-
-		mux.ServeHTTP(
-			rec,
-			req,
-		)
-
-		if rec.Code == http.StatusNotFound {
-			t.Fatalf(
-				"route missing: %s %s",
-				test.method,
-				test.path,
-			)
-		}
+			if rec.Code == http.StatusNotFound {
+				t.Errorf("route missing or returned 404: %s %s", tt.method, tt.path)
+			}
+		})
 	}
 }

@@ -8,13 +8,8 @@ import (
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
 )
 
-func (s *Storage) AddStrength(
-	exerciseId int64,
-	input models.StrengthInput,
-) error {
-
+func (s *Storage) AddStrength(exerciseId int64, input models.StrengthInput) error {
 	exercise, err := s.GetExercise(exerciseId)
-
 	if err != nil {
 		return err
 	}
@@ -24,23 +19,18 @@ func (s *Storage) AddStrength(
 		StrengthInput: input,
 	}
 
-	exercise.StrengthHistory =
-		append(exercise.StrengthHistory, strength)
-
+	exercise.StrengthHistory = append(exercise.StrengthHistory, strength)
 	return s.UpdateExercise(exercise)
 }
 
 func (s *Storage) GetStrength(id int64) (models.Strength, error) {
-
 	exercises, err := s.GetExercises()
-
 	if err != nil {
 		return models.Strength{}, err
 	}
 
 	for _, exercise := range exercises {
 		for _, strength := range exercise.StrengthHistory {
-
 			if strength.Id == id {
 				return strength, nil
 			}
@@ -50,12 +40,8 @@ func (s *Storage) GetStrength(id int64) (models.Strength, error) {
 	return models.Strength{}, nil
 }
 
-func (s *Storage) GetLastStrength(
-	exerciseId int64,
-) (models.Strength, error) {
-
+func (s *Storage) GetLastStrength(exerciseId int64) (models.Strength, error) {
 	exercise, err := s.GetExercise(exerciseId)
-
 	if err != nil {
 		return models.Strength{}, err
 	}
@@ -67,23 +53,16 @@ func (s *Storage) GetLastStrength(
 	return exercise.StrengthHistory[0], nil
 }
 
-func (s *Storage) UpdateStrength(
-	strength models.Strength,
-) error {
-
+func (s *Storage) UpdateStrength(strength models.Strength) error {
 	exercises, err := s.GetExercises()
-
 	if err != nil {
 		return err
 	}
 
 	for i := range exercises {
-		for j := range exercises[i].StrengthHistory {
-
-			if exercises[i].StrengthHistory[j].Id == strength.Id {
-
+		for j, st := range exercises[i].StrengthHistory {
+			if st.Id == strength.Id {
 				exercises[i].StrengthHistory[j] = strength
-
 				return s.saveStorage(exercises)
 			}
 		}
@@ -93,26 +72,15 @@ func (s *Storage) UpdateStrength(
 }
 
 func (s *Storage) DeleteStrength(id int64) error {
-
 	exercises, err := s.GetExercises()
-
 	if err != nil {
 		return err
 	}
 
 	for i := range exercises {
-
-		for j := range exercises[i].StrengthHistory {
-
-			if exercises[i].StrengthHistory[j].Id == id {
-
-				exercises[i].StrengthHistory =
-					slices.Delete(
-						exercises[i].StrengthHistory,
-						j,
-						j+1,
-					)
-
+		for j, st := range exercises[i].StrengthHistory {
+			if st.Id == id {
+				exercises[i].StrengthHistory = slices.Delete(exercises[i].StrengthHistory, j, j+1)
 				return s.saveStorage(exercises)
 			}
 		}
@@ -122,10 +90,8 @@ func (s *Storage) DeleteStrength(id int64) error {
 }
 
 func sortStrengths(strengths []models.Strength) []models.Strength {
-
 	sort.Slice(strengths, func(i, j int) bool {
 		return strengths[j].Date < strengths[i].Date
 	})
-
 	return strengths
 }
