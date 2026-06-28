@@ -18,6 +18,8 @@ Record exercises with load and repetitions, then review your workout history and
 
 The application is designed to be lightweight, fast, and simple with a minimal frontend and no unnecessary complexity.
 
+The application is PWA ready and can be used like a native application.
+
 No external dependencies are required.
 
 ---
@@ -30,7 +32,7 @@ No external dependencies are required.
 
 ### Mobile
 
-<img src="./web/assets/mobile.png" width="400" alt="Strength Tracker Mobile">
+<img src="./web/assets/mobile.jpg" width="400" alt="Strength Tracker Mobile">
 
 ---
 
