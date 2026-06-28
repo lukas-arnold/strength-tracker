@@ -3,28 +3,67 @@ name: Release
 on:
   push:
     branches: [ main ]
+
     tags:
       - "v*"
 
+
 jobs:
-  release:
+
+  test:
+    name: Verify release
     runs-on: ubuntu-latest
 
+
     steps:
+
       - uses: actions/checkout@v4
+
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+
+
+      - name: Run tests
+        run: go test ./...
+
+
+      - name: Run vet
+        run: go vet ./...
+
+
+      - name: Build application
+        run: go build ./cmd
+
+
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+
+
+    steps:
+
+      - uses: actions/checkout@v4
+
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
-          registry: https://ghcr.io
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      
+
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
 
       - name: Build, push, and release
         uses: docker/build-push-action@v6
