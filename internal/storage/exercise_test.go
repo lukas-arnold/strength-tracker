@@ -50,6 +50,7 @@ func TestGetExerciseNotFound(t *testing.T) {
 
 func TestGetExercisesWithLastStrength(t *testing.T) {
 	store := testStorage(t)
+
 	store.AddExercise(models.ExerciseInput{Name: "Bench"})
 
 	result, err := store.GetExercisesWithLastStrength()
@@ -61,8 +62,84 @@ func TestGetExercisesWithLastStrength(t *testing.T) {
 		t.Fatalf("expected 1 result, got %d", len(result))
 	}
 
-	if result[0].LastStrength.Load != -1 {
-		t.Errorf("expected default load -1, got %f", result[0].LastStrength.Load)
+	if result[0].LastStrength.Load != 0 {
+		t.Errorf("expected default load 0, got %f", result[0].LastStrength.Load)
+	}
+
+	if result[0].LastStrength.Date != "" {
+		t.Errorf("expected empty date, got %s", result[0].LastStrength.Date)
+	}
+}
+
+func TestGetExercisesWithLastStrengthExisting(t *testing.T) {
+	store := testStorage(t)
+
+	store.AddExercise(models.ExerciseInput{Name: "Bench"})
+
+	exercises, _ := store.GetExercises()
+
+	store.AddStrength(exercises[0].Id, models.StrengthInput{
+		Date:        "2026-01-01",
+		Load:        100,
+		Repetitions: 5,
+	})
+
+	result, err := store.GetExercisesWithLastStrength()
+	if err != nil {
+		t.Fatalf("error getting exercises: %v", err)
+	}
+
+	if result[0].LastStrength.Load != 100 {
+		t.Errorf("expected load 100, got %f", result[0].LastStrength.Load)
+	}
+
+	if result[0].LastStrength.Date != "2026-01-01" {
+		t.Errorf("expected date 2026-01-01, got %s", result[0].LastStrength.Date)
+	}
+}
+
+func TestGetExerciseByStrength(t *testing.T) {
+	store := testStorage(t)
+
+	err := store.AddExercise(models.ExerciseInput{Name: "Bench"})
+	if err != nil {
+		t.Fatalf("error adding exercise: %v", err)
+	}
+
+	exercises, err := store.GetExercises()
+	if err != nil {
+		t.Fatalf("error getting exercises: %v", err)
+	}
+
+	exercise := exercises[0]
+
+	err = store.AddStrength(exercise.Id, models.StrengthInput{
+		Date:        "2026-06-28",
+		Load:        100,
+		Repetitions: 5,
+	})
+	if err != nil {
+		t.Fatalf("error adding strength: %v", err)
+	}
+
+	exercises, err = store.GetExercises()
+	if err != nil {
+		t.Fatalf("error getting exercises: %v", err)
+	}
+
+	strength := exercises[0].StrengthHistory[0]
+
+	result, err := store.GetExerciseByStrength(strength)
+	if err != nil {
+		t.Fatalf("error getting exercise by strength: %v", err)
+	}
+
+	if result.Id != exercise.Id {
+		t.Errorf("expected exercise id %d, got %d", exercise.Id, result.Id)
+	}
+
+	if result.Name != "Bench" {
+		t.Errorf("expected Bench, got %s", result.Name)
 	}
 }
 

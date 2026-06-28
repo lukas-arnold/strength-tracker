@@ -53,7 +53,12 @@ func (h *Handler) HandleAddStrengthPost(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(
+		w,
+		r,
+		"/exercise/history/"+utils.ConvertIntToString(exerciseId),
+		http.StatusFound,
+	)
 }
 
 func (h *Handler) HandleEditStrength(w http.ResponseWriter, r *http.Request) {
@@ -85,6 +90,12 @@ func (h *Handler) HandleSaveStrength(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	exercise, err := h.store.GetExerciseByStrength(strength)
+	if err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
 	load, err := utils.ConvertLoad(r.FormValue("load"))
 	if err != nil {
 		handleError(w, err, http.StatusInternalServerError)
@@ -106,11 +117,23 @@ func (h *Handler) HandleSaveStrength(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, "/exercise/history/"+utils.ConvertIntToString(exercise.Id), http.StatusFound)
 }
 
 func (h *Handler) HandleDeleteStrength(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.ConvertToInt(r.PathValue("id"))
+	if err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	strength, err := h.store.GetStrength(id)
+	if err != nil {
+		handleError(w, err, http.StatusNotFound)
+		return
+	}
+
+	exercise, err := h.store.GetExerciseByStrength(strength)
 	if err != nil {
 		handleError(w, err, http.StatusInternalServerError)
 		return
@@ -121,5 +144,10 @@ func (h *Handler) HandleDeleteStrength(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(
+		w,
+		r,
+		"/exercise/history/"+utils.ConvertIntToString(exercise.Id),
+		http.StatusFound,
+	)
 }

@@ -45,6 +45,16 @@ func TestAddStrength(t *testing.T) {
 			t.Fatalf("expected 302, got %d", rec.Code)
 		}
 
+		expected := "/exercise/history/" + strconv.FormatInt(exercises[0].Id, 10)
+
+		if rec.Header().Get("Location") != expected {
+			t.Fatalf(
+				"expected redirect to %s, got %s",
+				expected,
+				rec.Header().Get("Location"),
+			)
+		}
+
 		ex, _ := h.store.GetExercise(exercises[0].Id)
 		if len(ex.StrengthHistory) != 1 || ex.StrengthHistory[0].Load != 100 {
 			t.Fatal("strength not added correctly")
@@ -96,6 +106,20 @@ func TestEditSaveStrength(t *testing.T) {
 
 		h.HandleSaveStrength(rec, req)
 
+		if rec.Code != http.StatusFound {
+			t.Fatalf("expected 302, got %d", rec.Code)
+		}
+
+		expected := "/exercise/history/" + strconv.FormatInt(exID, 10)
+
+		if rec.Header().Get("Location") != expected {
+			t.Fatalf(
+				"expected redirect to %s, got %s",
+				expected,
+				rec.Header().Get("Location"),
+			)
+		}
+
 		updated, _ := h.store.GetStrength(strengthID)
 		if updated.Load != 100 {
 			t.Errorf("expected load 100, got %f", updated.Load)
@@ -120,6 +144,20 @@ func TestDeleteStrength(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	h.HandleDeleteStrength(rec, req)
+
+	if rec.Code != http.StatusFound {
+		t.Fatalf("expected 302, got %d", rec.Code)
+	}
+
+	expected := "/exercise/history/" + strconv.FormatInt(exID, 10)
+
+	if rec.Header().Get("Location") != expected {
+		t.Fatalf(
+			"expected redirect to %s, got %s",
+			expected,
+			rec.Header().Get("Location"),
+		)
+	}
 
 	strength, _ := h.store.GetStrength(id)
 	if strength.Id != 0 {

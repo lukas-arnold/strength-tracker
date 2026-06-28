@@ -102,6 +102,17 @@ func TestConvertToIntInvalid(t *testing.T) {
 	}
 }
 
+func TestConvertToIntEmpty(t *testing.T) {
+	got, err := ConvertToInt("")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if got != 0 {
+		t.Fatalf("got %d want %d", got, 0)
+	}
+}
+
 func TestConvertLoad(t *testing.T) {
 	got, err := ConvertLoad("42.5")
 	if err != nil {
@@ -113,9 +124,44 @@ func TestConvertLoad(t *testing.T) {
 	}
 }
 
+func TestConvertLoadEmpty(t *testing.T) {
+	got, err := ConvertLoad("")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if got != 0 {
+		t.Fatalf("got %f want %f", got, 0)
+	}
+}
+
 func TestConvertLoadInvalid(t *testing.T) {
 	_, err := ConvertLoad("abc")
 	if err == nil {
 		t.Fatal("expected error")
+	}
+}
+
+func TestConvertIntToString(t *testing.T) {
+	got := ConvertIntToString(123)
+
+	if got != "123" {
+		t.Fatalf("got %s want %s", got, "123")
+	}
+}
+
+func TestConvertIntToStringZero(t *testing.T) {
+	got := ConvertIntToString(0)
+
+	if got != "0" {
+		t.Fatalf("got %s want %s", got, "0")
+	}
+}
+
+func TestConvertIntToStringNegative(t *testing.T) {
+	got := ConvertIntToString(-123)
+
+	if got != "-123" {
+		t.Fatalf("got %s want %s", got, "-123")
 	}
 }

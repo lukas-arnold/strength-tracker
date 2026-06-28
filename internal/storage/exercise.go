@@ -38,15 +38,11 @@ func (s *Storage) GetExercisesWithLastStrength() ([]models.ExerciseWithLastStren
 	}
 
 	result := make([]models.ExerciseWithLastStrength, len(exercises))
+
 	for i, ex := range exercises {
 		last, err := s.GetLastStrength(ex.Id)
 		if err != nil {
 			return nil, err
-		}
-
-		if last.Load == 0 {
-			last.Load = -1
-			last.Date = "1970-01-01"
 		}
 
 		result[i] = models.ExerciseWithLastStrength{
@@ -54,6 +50,7 @@ func (s *Storage) GetExercisesWithLastStrength() ([]models.ExerciseWithLastStren
 			LastStrength: last,
 		}
 	}
+
 	return result, nil
 }
 
@@ -66,6 +63,22 @@ func (s *Storage) GetExercise(id int64) (models.Exercise, error) {
 	for _, ex := range exercises {
 		if ex.Id == id {
 			return ex, nil
+		}
+	}
+	return models.Exercise{}, nil
+}
+
+func (s *Storage) GetExerciseByStrength(strength models.Strength) (models.Exercise, error) {
+	exercises, err := s.GetExercises()
+	if err != nil {
+		return models.Exercise{}, err
+	}
+
+	for _, ex := range exercises {
+		for _, strengthHistory := range ex.StrengthHistory {
+			if strengthHistory == strength {
+				return ex, nil
+			}
 		}
 	}
 	return models.Exercise{}, nil
@@ -85,7 +98,6 @@ func (s *Storage) GetExerciseForHistoryChart(id int64) (models.ExerciseForHistor
 		Repetitions: make([]int64, n),
 	}
 
-	// Reverse StrengthHistory while filling chart slices
 	for i, strength := range ex.StrengthHistory {
 		idx := n - 1 - i
 		chart.Dates[idx] = strength.Date

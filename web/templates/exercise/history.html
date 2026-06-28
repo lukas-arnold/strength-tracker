@@ -25,8 +25,16 @@
 		{{range .StrengthHistory}}
 	<tr>
 		<td class="date">{{.Date}}</td>
-		<td>{{formatLoad .Load}} kg</td>
-		<td>{{formatRepetitions .Repetitions}}</td>
+		<td>
+			{{if ne .Load 0.0}}
+            	{{formatLoad .Load}} kg 
+            {{end}}
+		</td>
+		<td>
+            {{if ne .Repetitions 0}}
+            	x {{formatRepetitions .Repetitions}}
+            {{end}}
+		</td>
 		<td>
             <div class="grid">
                 <form action="/strength/edit/{{.Id}}">
