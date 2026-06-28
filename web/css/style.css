@@ -17,3 +17,8 @@ th, td {
   text-align: center; 
   vertical-align: middle;
 }
+
+canvas {
+  max-height: 720px;
+  margin-bottom: 2em;
+}
