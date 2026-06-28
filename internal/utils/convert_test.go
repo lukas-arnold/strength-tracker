@@ -131,7 +131,7 @@ func TestConvertLoadEmpty(t *testing.T) {
 	}
 
 	if got != 0 {
-		t.Fatalf("got %f want %f", got, 0)
+		t.Fatalf("got %f want %f", got, 0.0)
 	}
 }
 
