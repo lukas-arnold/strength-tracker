@@ -3,7 +3,13 @@
   <h1>{{T "addStrength"}}</h1>
 </div>
 <div class="center">
-  <h2>{{.Name}} ({{.MuscleGroup}})</h2>
+	<h2>
+      <i class="fa-solid fa-dumbbell"></i> {{.Name}} 
+      <i class="fa-solid fa-bone"></i> {{.MuscleGroup}} 
+      {{if .Machine}}
+		    <i class="fa-solid fa-gear"></i> {{.Machine}}
+		  {{ end }}
+	</h2>
 </div>
 <form action="/strength/add/{{.Id}}" method="POST">
   <div><input name="date" type="date" required></div>
