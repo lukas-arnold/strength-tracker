@@ -1,14 +1,15 @@
 package models
 
 type ExerciseInput struct {
-	Name        string `json:"Name"`
-	MuscleGroup string `json:"MuscleGroup"`
+	Name        string `json:"name"`
+	MuscleGroup string `json:"muscleGroup"`
+	Machine     string `json:"machine"`
 }
 
 type Exercise struct {
-	Id int64 `json:"Id"`
+	Id int64 `json:"id"`
 	ExerciseInput
-	StrengthHistory []Strength `json:"StrengthHistory"`
+	StrengthHistory []Strength `json:"strengthHistory"`
 }
 
 type ExerciseWithLastStrength struct {
@@ -18,6 +19,7 @@ type ExerciseWithLastStrength struct {
 
 type ExerciseForHistoryChart struct {
 	Exercise
-	Dates []string
-	Loads []float64
+	Dates       []string
+	Loads       []float64
+	Repetitions []int64
 }

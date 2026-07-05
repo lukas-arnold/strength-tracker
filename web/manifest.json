@@ -1,6 +1,6 @@
 {
   "short_name": "Strength Tracker",
-  "name": "Strength-Tracker",
+  "name": "Strength Tracker",
   "icons": [
     {
       "src": "/web/assets/favicon-192x192.png",
@@ -17,17 +17,17 @@
   "display": "standalone",
   "theme_color": "black",
   "background_color": "white",
-"screenshots": [
-  {
-    "src": "/web/assets/desktop.png",
-    "sizes": "1918x876",
-    "type": "image/png",
-    "form_factor": "wide"
-  },
-  {
-    "src": "/web/assets/mobile.jpg",
-    "sizes": "1080x2226",
-    "type": "image/png"
-  }
-]
+  "screenshots": [
+    {
+      "src": "/web/assets/desktop.png",
+      "sizes": "1918x876",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/web/assets/mobile.jpg",
+      "sizes": "1080x2226",
+      "type": "image/png"
+    }
+  ]
 }

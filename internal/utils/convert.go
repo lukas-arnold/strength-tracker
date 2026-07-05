@@ -8,34 +8,31 @@ import (
 )
 
 func ConvertExercisesToBytes(exercises []models.Exercise) ([]byte, error) {
-	bytes, err := json.Marshal(exercises)
-	if err != nil {
-		return nil, err
-	}
-	return bytes, nil
+	return json.Marshal(exercises)
 }
 
 func ConvertBytesToExercises(bytes []byte) ([]models.Exercise, error) {
 	var exercises []models.Exercise
 	err := json.Unmarshal(bytes, &exercises)
-	if err != nil {
-		return exercises, err
-	}
-	return exercises, nil
+	return exercises, err
 }
 
-func ConvertId(idStr string) (int64, error) {
-	id, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		return -1, err
+func ConvertToInt(intStr string) (int64, error) {
+	if intStr == "" {
+		return 0, nil
 	}
-	return id, nil
+
+	return strconv.ParseInt(intStr, 10, 64)
 }
 
 func ConvertLoad(loadStr string) (float64, error) {
-	load, err := strconv.ParseFloat(loadStr, 64)
-	if err != nil {
-		return -1, err
+	if loadStr == "" {
+		return 0, nil
 	}
-	return load, nil
+
+	return strconv.ParseFloat(loadStr, 64)
+}
+
+func ConvertIntToString(value int64) string {
+	return strconv.FormatInt(value, 10)
 }

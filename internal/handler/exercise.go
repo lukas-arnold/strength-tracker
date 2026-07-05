@@ -1,122 +1,99 @@
 package handler
 
 import (
-	"html/template"
-	"log"
 	"net/http"
 
-	"github.com/lukas-arnold/strength-tracker/internal/configs"
-	"github.com/lukas-arnold/strength-tracker/internal/language"
 	"github.com/lukas-arnold/strength-tracker/internal/models"
-	"github.com/lukas-arnold/strength-tracker/internal/storage"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
 )
 
-func HandleAddExerciseGet(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(
-		template.New("add.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/exercise/add.html"),
-	)
-	err := tmpl.Execute(w, nil)
-	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
-	}
+func (h *Handler) HandleAddExerciseGet(w http.ResponseWriter, r *http.Request) {
+	h.renderTemplate(w, "templates/exercise/add.html", nil)
 }
 
-func HandleAddExercisePost(w http.ResponseWriter, r *http.Request) {
-	err := storage.AddExercise(models.ExerciseInput{Name: r.FormValue("name"), MuscleGroup: r.FormValue("muscleGroup")})
+func (h *Handler) HandleAddExercisePost(w http.ResponseWriter, r *http.Request) {
+	err := h.store.AddExercise(models.ExerciseInput{
+		Name:        r.FormValue("name"),
+		MuscleGroup: r.FormValue("muscleGroup"),
+		Machine:     r.FormValue("machine"),
+	})
+
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
+
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-func HandleEditExercise(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(
-		template.New("edit.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/exercise/edit.html"),
-	)
-	id, err := utils.ConvertId(r.PathValue("id"))
+func (h *Handler) HandleEditExercise(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	exercise, err := storage.GetExercise(id)
+
+	exercise, err := h.store.GetExercise(id)
 	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
+		handleError(w, err, http.StatusNotFound)
+		return
 	}
-	err = tmpl.Execute(w, exercise)
-	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
-	}
+
+	h.renderTemplate(w, "templates/exercise/edit.html", exercise)
 }
 
-func HandleSaveExercise(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.ConvertId(r.PathValue("id"))
+func (h *Handler) HandleSaveExercise(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	exercise, err := storage.GetExercise(id)
+
+	exercise, err := h.store.GetExercise(id)
 	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
+		handleError(w, err, http.StatusNotFound)
+		return
 	}
+
 	exercise.Name = r.FormValue("name")
 	exercise.MuscleGroup = r.FormValue("muscleGroup")
-	err = storage.UpdateExercise(exercise)
-	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+	exercise.Machine = r.FormValue("machine")
+
+	if err = h.store.UpdateExercise(exercise); err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
+
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-func HandleDeleteExercise(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.ConvertId(r.PathValue("id"))
+func (h *Handler) HandleDeleteExercise(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	err = storage.DeleteExercise(id)
-	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
+
+	if err = h.store.DeleteExercise(id); err != nil {
+		handleError(w, err, http.StatusNotFound)
+		return
 	}
+
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-func HandleHistory(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(
-		template.New("history.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/exercise/history.html"),
-	)
-	id, err := utils.ConvertId(r.PathValue("id"))
+func (h *Handler) HandleHistory(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	exercise, err := storage.GetExerciseForHistoryChart(id)
+
+	exercise, err := h.store.GetExerciseForHistoryChart(id)
 	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
+		handleError(w, err, http.StatusNotFound)
+		return
 	}
-	err = tmpl.Execute(w, exercise)
-	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
-	}
+
+	h.renderTemplate(w, "templates/exercise/history.html", exercise)
 }

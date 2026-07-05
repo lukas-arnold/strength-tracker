@@ -3,6 +3,7 @@ package language
 import (
 	"embed"
 	"encoding/json"
+	"strings"
 )
 
 //go:embed *.json
@@ -10,27 +11,29 @@ var languageFiles embed.FS
 
 type Translations map[string]string
 
-var languages = map[string]Translations{}
+var languages = make(map[string]Translations)
 
 func LoadLanguages() error {
-	files := map[string]string{
-		"en": "en.json",
-		"de": "de.json",
+	entries, err := languageFiles.ReadDir(".")
+	if err != nil {
+		return err
 	}
 
-	for lang, path := range files {
-		data, err := languageFiles.ReadFile(path)
-		if err != nil {
-			return err
-		}
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".json") {
+			data, err := languageFiles.ReadFile(entry.Name())
+			if err != nil {
+				return err
+			}
 
-		var t Translations
-		err = json.Unmarshal(data, &t)
-		if err != nil {
-			return err
-		}
+			var t Translations
+			if err := json.Unmarshal(data, &t); err != nil {
+				return err
+			}
 
-		languages[lang] = t
+			lang := strings.TrimSuffix(entry.Name(), ".json")
+			languages[lang] = t
+		}
 	}
 
 	return nil
@@ -42,6 +45,5 @@ func T(lang, key string) string {
 			return v
 		}
 	}
-
 	return key
 }

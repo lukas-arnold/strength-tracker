@@ -1,117 +1,153 @@
 package handler
 
 import (
-	"html/template"
-	"log"
 	"net/http"
 
-	"github.com/lukas-arnold/strength-tracker/internal/configs"
-	"github.com/lukas-arnold/strength-tracker/internal/language"
 	"github.com/lukas-arnold/strength-tracker/internal/models"
-	"github.com/lukas-arnold/strength-tracker/internal/storage"
 	"github.com/lukas-arnold/strength-tracker/internal/utils"
 )
 
-func HandleAddStrengthGet(w http.ResponseWriter, r *http.Request) {
-	exerciseId, err := utils.ConvertId(r.PathValue("exerciseId"))
+func (h *Handler) HandleAddStrengthGet(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.ConvertToInt(r.PathValue("exerciseId"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	tmpl := template.Must(
-		template.New("add.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/strength/add.html"),
+
+	exercise, err := h.store.GetExercise(id)
+	if err != nil {
+		handleError(w, err, http.StatusNotFound)
+		return
+	}
+
+	h.renderTemplate(w, "templates/strength/add.html", exercise)
+}
+
+func (h *Handler) HandleAddStrengthPost(w http.ResponseWriter, r *http.Request) {
+	exerciseId, err := utils.ConvertToInt(r.PathValue("exerciseId"))
+	if err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	load, err := utils.ConvertLoad(r.FormValue("load"))
+	if err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	reps, err := utils.ConvertToInt(r.FormValue("repetitions"))
+	if err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	input := models.StrengthInput{
+		Date:        r.FormValue("date"),
+		Load:        load,
+		Repetitions: reps,
+	}
+
+	if err := h.store.AddStrength(exerciseId, input); err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(
+		w,
+		r,
+		"/exercise/history/"+utils.ConvertIntToString(exerciseId),
+		http.StatusFound,
 	)
-	exercise, err := storage.GetExercise(exerciseId)
-	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
-	}
-	err = tmpl.Execute(w, exercise)
 }
 
-func HandleAddStrengthPost(w http.ResponseWriter, r *http.Request) {
-	exerciseId, err := utils.ConvertId(r.PathValue("exerciseId"))
+func (h *Handler) HandleEditStrength(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	date := r.FormValue("date")
-	loadForm := r.FormValue("load")
-	load, err := utils.ConvertLoad(loadForm)
+
+	strength, err := h.store.GetStrength(id)
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusNotFound)
+		return
 	}
-	storage.AddStrength(exerciseId, models.StrengthInput{Date: date, Load: load})
-	http.Redirect(w, r, "/", http.StatusFound)
+
+	h.renderTemplate(w, "templates/strength/edit.html", strength)
 }
 
-func HandleEditStrength(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(
-		template.New("edit.html").Funcs(template.FuncMap{
-			"T": func(key string) string {
-				return language.T(configs.GetLanguage(), key)
-			},
-		}).ParseFS(configs.GetWebFiles(), "templates/strength/edit.html"),
-	)
-	id, err := utils.ConvertId(r.PathValue("id"))
+func (h *Handler) HandleSaveStrength(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	strength, err := storage.GetStrength(id)
-	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
-	}
-	err = tmpl.Execute(w, strength)
-	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
-	}
-}
 
-func HandleSaveStrength(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.ConvertId(r.PathValue("id"))
+	strength, err := h.store.GetStrength(id)
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusNotFound)
+		return
 	}
-	strength, err := storage.GetStrength(id)
+
+	exercise, err := h.store.GetExerciseByStrength(strength)
 	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	loadForm := r.FormValue("load")
-	load, err := utils.ConvertLoad(loadForm)
+
+	load, err := utils.ConvertLoad(r.FormValue("load"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
+
+	reps, err := utils.ConvertToInt(r.FormValue("repetitions"))
+	if err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
 	strength.Date = r.FormValue("date")
 	strength.Load = load
-	err = storage.UpdateStrength(strength)
-	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+	strength.Repetitions = reps
+
+	if err := h.store.UpdateStrength(strength); err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	http.Redirect(w, r, "/", http.StatusFound)
+
+	http.Redirect(w, r, "/exercise/history/"+utils.ConvertIntToString(exercise.Id), http.StatusFound)
 }
 
-func HandleDeleteStrength(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.ConvertId(r.PathValue("id"))
+func (h *Handler) HandleDeleteStrength(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.ConvertToInt(r.PathValue("id"))
 	if err != nil {
-		errorHandling(w, 500)
-		log.Print(err)
+		handleError(w, err, http.StatusInternalServerError)
+		return
 	}
-	err = storage.DeleteStrength(id)
+
+	strength, err := h.store.GetStrength(id)
 	if err != nil {
-		errorHandling(w, 404)
-		log.Print(err)
+		handleError(w, err, http.StatusNotFound)
+		return
 	}
-	http.Redirect(w, r, "/", http.StatusFound)
+
+	exercise, err := h.store.GetExerciseByStrength(strength)
+	if err != nil {
+		handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	if err := h.store.DeleteStrength(id); err != nil {
+		handleError(w, err, http.StatusNotFound)
+		return
+	}
+
+	http.Redirect(
+		w,
+		r,
+		"/exercise/history/"+utils.ConvertIntToString(exercise.Id),
+		http.StatusFound,
+	)
 }

@@ -1,127 +1,65 @@
-<!DOCTYPE html>
-<html lang='{{T "language"}}'>
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{T "title"}}</title>
-  <link rel="stylesheet" href="/web/css/pico.min.css">
-  <link rel="stylesheet" href="/web/css/center.css">
-  <link rel="stylesheet" href="/web/assets/fontawesome/css/fontawesome.min.css">
-  <link rel="stylesheet" href="/web/assets/fontawesome/css/solid.min.css">
-  <script src="/web/js/chart.min.js"></script>
-  <script src="/web/js/format.js" defer></script>
-</head>
-
-<header>
-    <div class="center">
-      <a href="/">
-        <button class="outline primary"><i class="fa-solid fa-home"></i></button>
-      </a>
-    </div>
-    <br>
-    <div class="center">
-      <h1>{{T "strengthHistory"}}</h1>
-    </div>
-    <div class="center">
-      <h2>{{.Name}} ({{.MuscleGroup}})</h2>
-    </div>
-</header>
-
-<main class="container-fluid">
-  <div>
-    <canvas id="historyChart"></canvas>
-  </div>
-
-  <table>
-      <tr>
-          <th>{{T "date"}}</th>
-          <th>{{T "load"}}</th>
-      </tr>
-      <tr>
-          {{range .StrengthHistory}}
-              <tr>
-                  <td class="date">{{.Date}}</td>
-                  <td class="load">{{.Load}}</td>
-                  <td>
-                      <form action="/strength/edit/{{.Id}}">
-                          <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
-                      </form>
-                      <form action="/strength/delete/{{.Id}}">
-                          <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
-                      </form>
-                  </td>
-              </tr>
-          {{end}}
-      </tr>
-  </table>
-
-  <form action="/strength/add/{{.Id}}">
-    <input type="submit" value='{{T "addStrength"}}' />
-  </form>
-</main>
-
-</body>
-
+{{define "template"}}
+<div class="center">
+	<h1>{{T "strengthHistory"}}</h1>
+</div>
+<div class="center">
+	<h2>
+        <i class="fa-solid fa-dumbbell"></i> {{.Name}} 
+        <i class="fa-solid fa-bone"></i> {{.MuscleGroup}} 
+        {{if .Machine}}
+		    <i class="fa-solid fa-gear"></i> {{.Machine}}
+		{{ end }}
+	</h2>
+</div>
+<div>
+	<canvas id="historyChart"></canvas>
+</div>
+<table>
+	<tr>
+		<th>{{T "date"}}</th>
+		<th>{{T "load"}}</th>
+		<th>{{T "repetitions"}}</th>
+        <th>{{T "action"}}</th>
+	</tr>
+	<tr>
+		{{range .StrengthHistory}}
+	<tr>
+		<td class="date">{{.Date}}</td>
+		<td>
+			{{if ne .Load 0.0}}
+            	{{formatLoad .Load}} kg 
+            {{end}}
+		</td>
+		<td>
+            {{if ne .Repetitions 0}}
+            	x {{formatRepetitions .Repetitions}}
+            {{end}}
+		</td>
+		<td>
+            <div class="grid">
+                <form action="/strength/edit/{{.Id}}">
+                    <button type="submit" class="secondary"><i class="fa-solid fa-pen"></i></button>
+                </form>
+                <form action="/strength/delete/{{.Id}}">
+                    <button type="submit" class="contrast"><i class="fa-solid fa-trash"></i></button>
+                </form>
+            </div>
+		</td>
+	</tr>
+	{{end}}
+	</tr>
+</table>
+<form action="/strength/add/{{.Id}}">
+	<input type="submit" value='{{T "addStrength"}}'/>
+</form>
 <script>
-  function formatLoad(load) {
-    load = load.replace(".", ",");
-    load += " kg";
-    return load;
-  }
-  function formatDate(date) {
-    date = new Date(date);
-    const options = {year: "numeric", month: "2-digit", day: "2-digit"};
-    date = date.toLocaleDateString("default", options);
-    return date;
-  }
+	renderChart("historyChart", {
+	    labels: {{.Dates}},
+	    loadLabel: '{{T "load"}}',
+	    loadData: {{.Loads}},
+	    loadFormatter: formatLoad,
+	    repetitionsLabel: '{{T "repetitions"}}',
+	    repetitionsData: {{.Repetitions}},
+	});
 </script>
-
-<script>
-  const ctx = document.getElementById('historyChart');
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: {{.Dates}},
-      datasets: [{
-        label: '{{T "load"}}',
-        data: {{.Loads}},
-        borderWidth: 1
-      }]
-    },
-    options: {
-      plugins: {
-        tooltip: {
-          callbacks: {
-            title: (tooltipItem, data) => {
-              return formatDate(tooltipItem[0].label)
-            },
-            label: (tooltipItem, data) => {
-                return formatLoad(tooltipItem.formattedValue);
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: false,
-          ticks: {
-            callback: function(value) {
-              return formatLoad(this.getLabelForValue(value));
-            }
-          }
-        },
-        x: {
-          ticks: {
-            callback: function(value) {
-              return formatDate(this.getLabelForValue(value));
-            }
-          }
-        },
-      }
-    }
-  });
-</script>
-
-</html>
+{{end}}
